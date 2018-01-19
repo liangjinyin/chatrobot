@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import jice.vigortech.chat.robot.common.constants.ResultCode;
 import jice.vigortech.chat.robot.common.model.service.BaseService;
 import jice.vigortech.chat.robot.common.util.SecurityUtils;
+import jice.vigortech.chat.robot.modules.sys.office.dao.OfficeDao;
 import jice.vigortech.chat.robot.modules.sys.office.entity.Office;
 import jice.vigortech.chat.robot.modules.sys.role.dao.RoleDao;
 import jice.vigortech.chat.robot.modules.sys.role.entity.Role;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
+import jice.vigortech.chat.robot.modules.sys.user.dao.UserDao;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
 
 @Service
@@ -23,7 +25,10 @@ public class RoleService extends BaseService{
 
 	@Autowired
 	RoleDao roleDao;
-	
+	@Autowired
+	UserDao userDao;
+	@Autowired
+	OfficeDao officeDao;
 	
 	/**
 	 * 获取角色列表
@@ -60,7 +65,10 @@ public class RoleService extends BaseService{
 			if(roleDao.getRoleById(id)==null){
 				return ResultCode.ROLE_NOT_EXITS;
 			}
+			roleDao.deleteUserByRoleId(id);
 			roleDao.deleteOfficeByRoleId(id);
+			roleDao.deleteThemeByRoleId(id);
+			roleDao.deleteSecretByRoleId(id);
 			roleDao.deleteRoleById(id);
 			return ResultCode.OPERATION_SUCCESSED;
 		} catch (Exception e) {
@@ -134,14 +142,22 @@ public class RoleService extends BaseService{
 	/**
 	 * 获取角色用户列表
 	 * @param id 角色id
+	 * @param dept 
 	 * @return
 	 */
 	public Object getRoleUserList(Integer id) {
 		try {
 			list = roleDao.getRoleUserList(id);
 			Map<String,Object> temp = roleDao.getRoleById(id);
-			//total = roleDao.getRoleUserCount(id);
-			//data.put("total", total);
+			List<Map<String,Object>> userAllList= userDao.getUserAllList();
+			/*//返回机构
+			Map<String,Object> officeAllList = officeDao.getParent();
+			List<Map<String,Object>> children = officeDao.getAllOffice();;
+			officeAllList.put("children", children);
+			data.put("officeAllList", officeAllList);*/		
+			
+			
+			data.put("userAllList", userAllList);		
 			data.put("userList", list);
 			data.put("roleDetail", temp);
 			return data;
@@ -159,10 +175,9 @@ public class RoleService extends BaseService{
 	@Transactional(readOnly=false,rollbackFor=Exception.class)
 	public ResultCode addRoleUser(String ids,Integer id) {
 		try {
-			
+			roleDao.deleteUserByRoleId(id);
 			if(StringUtils.isNoneBlank(ids)){
 				String[] split = ids.split(",");
-				
 				for (String userId : split) {
 					roleDao.addRoleUser(Integer.parseInt(userId),id);
 				}
@@ -185,6 +200,8 @@ public class RoleService extends BaseService{
 	@Transactional(readOnly=false,rollbackFor=Exception.class)
 	public ResultCode addRoleThemeAndSecret(String themeIds, Integer id, String secretIds) {
 		try {
+			roleDao.deleteThemeByRoleId(id);
+			roleDao.deleteSecretByRoleId(id);
 			if(StringUtils.isNoneBlank(themeIds)){
 				String[] temp1 = themeIds.split(",");
 				for (String themeId : temp1) {

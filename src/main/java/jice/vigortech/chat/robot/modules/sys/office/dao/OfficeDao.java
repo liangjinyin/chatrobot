@@ -16,7 +16,7 @@ import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 public interface OfficeDao {
 	
 	@Select("<script>"
-			+ "select id,`name`,type,parent_id parent,parent_ids parentId, create_by createBy, "
+			+ "select id,`name`,type,expand,parent_id parent,parent_ids parentId, create_by createBy, "
 			+ "create_date createDate,update_date updateDate "
 			+ "from sys_office "
 			+ "where del_flag=0 "
@@ -44,7 +44,7 @@ public interface OfficeDao {
 			+ "</script>")
 	int getOfficeCount(PageQuery query);
 
-	@Select("select id,`name`,type,parent_id parent,parent_ids parentIds,create_by createBy, "
+	@Select("select id,`name`,type,expand,parent_id parent,parent_ids parentIds,create_by createBy, "
 			+ "create_date createDate,update_date updateDate "
 			+ "from sys_office where del_flag=0 and id=${id}")
 	Map<String, Object> getOfficeDetailById(@Param("id")Integer id);
@@ -52,18 +52,21 @@ public interface OfficeDao {
 	@Update("update sys_office set del_flag=1 and id=${id}")
 	int deleteOfficeById(@Param("id")Integer id);
 
-	@Update("update sys_office set name=#{name},type=#{type},parent_id=#{parent}, "
+	@Update("update sys_office set name=#{name},type=#{type},expand=#{expand},parent_id=#{parent}, "
 			+ "parent_ids=#{parentIds},update_date=#{updateDateString} where id=#{id}")
 	int updateOffice(Office office);
 	/*@Update("update sys_office set name=#{name} "
 			+ ",update_date=#{updateDateString} where id=#{id}")
 	int updateOffice(Office office);*/
 
-	@Insert("insert into sys_office (`name`,type,parent_id,parent_ids,create_by,create_date,update_date) "
-			+ "values(#{name},#{type},#{parent},#{parentIds},#{createBy.username},#{updateDateString},#{updateDateString})")
+	@Insert("insert into sys_office (`name`,type,expand,parent_id,parent_ids,create_by,create_date,update_date) "
+			+ "values(#{name},#{type},#{expand},#{parent},#{parentIds},#{createBy.username},#{updateDateString},#{updateDateString})")
 	int insertOffice(Office office);
 	
-	@Select("select id,`name`,type from sys_office where del_flag=0 order by id")
+	@Select("select id,`name`,type,expand from sys_office where del_flag=0 and type = '2' order by id")
 	List<Map<String, Object>> getAllOffice();
+	
+	@Select("select id,`name`,type,expand from sys_office where del_flag=0 and type = '1' ")
+	List<Map<String, Object>> getParent();
 
 }

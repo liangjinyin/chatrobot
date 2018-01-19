@@ -79,11 +79,13 @@ public interface RoleDao {
 	@Delete("delete from sys_role_office where role_id=${id}")
 	int deleteOfficeByRoleId(@Param("id")Integer id);
 	
-	@Select("select id,`name`,phone, "
-			+ "company_id companyid,office_id officeid "
-			+ "from sys_user where id in ( "
+	@Select("select a.id,a.name,a.phone, "
+			+ "a.company_id companyid,a.office_id officeid,'微构科技公司' companyName,b.name officeName "
+			+ "from sys_user a "
+			+ "left join sys_office b on b.id = a.office_id "
+			+ "where a.id in ( "
 			+ "select user_id from sys_user_role where role_id=${id}) "
-			+ "")
+			+ "and a.del_flag=0")
 	List<Map<String, Object>> getRoleUserList(@Param("id")Integer id);
 	
 	@Insert("replace into sys_user_role (user_id,role_id) "
@@ -114,4 +116,13 @@ public interface RoleDao {
 	@Select("SELECT id,name from sys_secret WHERE del_flag=0 and id "
 			+ "in (SELECT secret_id from sys_role_secret  where role_id = ${id}) ")
 	List<Map<String, Object>> getRoleSecretList(@Param("id")Integer id);
+	
+	@Delete("delete from sys_user_role where role_id=${id}")
+	int deleteUserByRoleId(@Param("id")Integer id);
+	
+	@Delete("delete from sys_role_secret where role_id=${id}")
+	int deleteThemeByRoleId(@Param("id")Integer id);
+	
+	@Delete("delete from sys_role_theme where role_id=${id}")
+	int deleteSecretByRoleId(@Param("id")Integer id);
 }

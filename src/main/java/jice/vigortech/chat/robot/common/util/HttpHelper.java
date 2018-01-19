@@ -36,6 +36,14 @@ public class HttpHelper {
 	
 	private static Logger logger = LoggerFactory.getLogger(HttpHelper.class);
 	
+	public HttpHelper() {
+		this(new DefaultHttpResponseParser());
+	}
+	public HttpHelper(HttpResponseParser resParser) {
+		this.resParser = resParser;
+	}
+	private HttpResponseParser resParser;
+	
 	public static String httpGet(String url, JSONObject params, JSONObject headers) throws Exception {
 		logger.info("reqest url:" + url + ";params:" + JSON.toJSONString(params));
 		StringBuilder urlSb = new StringBuilder();
@@ -150,4 +158,24 @@ public class HttpHelper {
         }  
         return buffer.toString();  
     }  
+    
+    public CommonHttpResponse httpPostWithStringStream(String url, JSONObject params) throws Exception {
+		HttpEntity entity = null;
+		if(params != null && !params.isEmpty()) {
+			entity = new StringEntity(params.toString(), Charset.forName("utf-8"));  
+		}
+		return httpPost(url, entity);
+	}
+    
+    private CommonHttpResponse httpPost(String url, HttpEntity entity) throws Exception {
+		logger.info("post request url:" + url);
+		HttpClient client = HttpClientBuilder.create()
+				.build();
+		HttpPost post = new HttpPost(url);
+		if(entity != null) {
+			post.setEntity(entity);
+		}
+		HttpResponse response = client.execute(post);
+		return resParser.parseHttpResponse(response);
+	}
 }

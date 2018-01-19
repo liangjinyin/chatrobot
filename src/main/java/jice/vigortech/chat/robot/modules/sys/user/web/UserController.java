@@ -11,7 +11,9 @@ import jice.vigortech.chat.robot.common.constants.SysConstants;
 import jice.vigortech.chat.robot.common.model.web.BaseController;
 import jice.vigortech.chat.robot.modules.sys.office.service.OfficeService;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
+import jice.vigortech.chat.robot.modules.sys.user.entity.MobileCode;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
+import jice.vigortech.chat.robot.modules.sys.user.service.CodeService;
 import jice.vigortech.chat.robot.modules.sys.user.service.UserService;
 @RestController
 @RequestMapping(path=SysConstants.SYS_URL+"/user", method=RequestMethod.POST)
@@ -21,6 +23,8 @@ public class UserController extends BaseController{
 	UserService userService;
 	@Autowired
 	OfficeService officeService;
+	@Autowired
+	CodeService codeService;
 	
 	@RequestMapping("/list")
 	public String getUserList(PageQuery query){
@@ -35,9 +39,9 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping("/regist")
-	public String addUser(User user){
+	public String addUser(User user/*,@RequestParam("code")MobileCode code*/){
 		
-		data = userService.addUser(user);
+		data = userService.addUser(user/*,code*/);
 		if(data instanceof ResultCode){
 			resCode = (ResultCode) data;
 			data=null;
@@ -75,6 +79,21 @@ public class UserController extends BaseController{
 		}else{
 			resCode  = ResultCode.OPERATION_SUCCESSED;
 		}
+		return Result();
+	}
+	
+	@RequestMapping("/send")
+	public String sendCode(MobileCode code) {
+		resCode = codeService.sendMobileCode(code);
+		data = null;
+		return Result();
+	}
+	
+	@RequestMapping("/login")
+	public String login(User user/*,@RequestParam("code")MobileCode code*/){
+		data = null;
+		resCode = ResultCode.OPERATION_SUCCESSED;
+		System.out.println("skasdhfklshdk哈哈");
 		return Result();
 	}
 }

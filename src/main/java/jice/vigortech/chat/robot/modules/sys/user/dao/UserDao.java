@@ -73,7 +73,7 @@ public interface UserDao {
 			+ ",a.create_by ,a.office_id "
 			+ "from sys_user a "
 			+ "LEFT JOIN sys_office oy ON oy.id = a.office_id "
-			+ "where a.del_flag=0 ${sql} "
+			+ "where a.del_flag=0 ${sql} and oy.type=2 "
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
 			+ "</if> "
@@ -92,7 +92,7 @@ public interface UserDao {
 			+ "select count(DISTINCT(a.id)) "
 			+ "from sys_user a "
 			+ "LEFT JOIN sys_office oy ON oy.id = a.office_id "
-			+ "where a.del_flag=0 ${sql} "
+			+ "where a.del_flag=0 ${sql} and oy.type=2 "
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
 			+ "</if> "
@@ -104,4 +104,10 @@ public interface UserDao {
 			+ "</if> "
 			+ "</script>")
 	int getUserCount(PageQuery query);
+	
+	@Select("select a.id userId,a.name username,b.id officeId,b.name officeName from sys_user a "
+			+ "left join sys_office b on a.office_id = b.id "
+			+ "where a.del_flag=0 "
+			+ "order by a.id ")
+	List<Map<String,Object>> getUserAllList();
 }

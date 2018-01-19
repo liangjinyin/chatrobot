@@ -17,6 +17,7 @@ import jice.vigortech.chat.robot.common.util.SecurityUtils;
 import jice.vigortech.chat.robot.modules.sys.office.dao.OfficeDao;
 import jice.vigortech.chat.robot.modules.sys.role.dao.RoleDao;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
+import jice.vigortech.chat.robot.modules.sys.user.dao.MobileCodeDao;
 import jice.vigortech.chat.robot.modules.sys.user.dao.UserDao;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
 
@@ -30,6 +31,8 @@ public class UserService extends BaseService{
 	OfficeDao officeDao;
 	@Autowired
 	RoleDao roleDao;
+	@Autowired
+	MobileCodeDao codeDao;
 	/**
 	 * 获取用户列表
 	 * @param query
@@ -63,40 +66,47 @@ public class UserService extends BaseService{
 	 * @return
 	 */
 	@Transactional(readOnly=false,rollbackFor=Exception.class)
-	public Object addUser(User user) {
-		if(user.getId()==null){
-			//添加
-			try {
-				if(userDao.getUserByUserName(user.getUsername())!=null){
-					return ResultCode.USER_HAS_EXIST;
-				}
-				String password = Md5PasswordEncoderWithSalt.encodePassword(user.getPassword()); 
-				user.setPassword(password);
-				//user.setCreateBy(createBy);
-				if(userDao.insertUser(user)>0){//用户注册后生成token并保存
-					Map<String,Object> userConfig = new HashMap<String,Object>();
-					String token = AESUtil.encrypt(user.getUsername(), SysConstants.SYS_TOKEN_SALT);
-					userConfig.put("id", user.getId());
-					userConfig.put("name", user.getUsername());
-					userConfig.put("token", token);
-					userConfig.put("time", "30");
-					userDao.insertUserConfig(userConfig);
-				}
-				return ResultCode.OPERATION_SUCCESSED;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return ResultCode.OPERATION_FAILED;
-			}
-		}else{
-			//修改
-			if(userDao.updateUser(user)>0){
-				return ResultCode.OPERATION_SUCCESSED;
-			}else{
-				return ResultCode.OPERATION_FAILED;
-			}
-			
-		}
+	public Object addUser(User user/*,MobileCode code*/) {
 		
+			if(user.getId()==null){
+				//添加
+				try {
+					if(userDao.getUserByUserName(user.getUsername())!=null){
+						return ResultCode.USER_HAS_EXIST;
+					}
+					String password = Md5PasswordEncoderWithSalt.encodePassword(user.getPassword()); 
+					user.setPassword(password);
+					//user.setCreateBy(createBy);
+					if(userDao.insertUser(user)>0){//用户注册后生成token并保存
+						Map<String,Object> userConfig = new HashMap<String,Object>();
+						String token = AESUtil.encrypt(user.getUsername(), SysConstants.SYS_TOKEN_SALT);
+						userConfig.put("id", user.getId());
+						userConfig.put("name", user.getUsername());
+						userConfig.put("token", token);
+						userConfig.put("time", "30");
+						userDao.insertUserConfig(userConfig);
+					}
+					return ResultCode.OPERATION_SUCCESSED;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return ResultCode.OPERATION_FAILED;
+				}
+			}else{
+				//修改
+				if(userDao.updateUser(user)>0){
+					return ResultCode.OPERATION_SUCCESSED;
+				}else{
+					return ResultCode.OPERATION_FAILED;
+				}
+			}
+		/*if(codeDao.checkMobileCode(user.getPhone(), code) > 0){
+		  添加登陆
+		 
+		}else if(codeDao.checkMobileIncorrectOrExpired(user.getPhone(), code)==null) {
+			return ResultCode.MOBILECODE_INCORRECT;
+		} else {
+			return ResultCode.MOBILECODE_EXPIRED;
+		}*/
 	}
 	
 	/**

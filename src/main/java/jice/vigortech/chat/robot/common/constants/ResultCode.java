@@ -11,6 +11,11 @@ public enum ResultCode {
 	CUSTOM_ERROR("998", "{errmsg}"),
 	NONE("999", "无意义数据"), 
 
+	MOBILECODE_EXPIRED("1001", "验证码已失效"), 
+	MOBILECODE_INCORRECT("1002", "验证码错误"), 
+	MOBILECODE_TYPE_INVALID("1003", "无效的验证码请求"), 
+	MOBILECODE_EMPTY("1004", "验证码为空"), 
+	
 	USER_NAME_OR_PASSWORD_EMPTY("101", "帐号或密码为空"),
 	USER_DENIED("102", "未授权登录"),
 	USER_NAME_OR_PASSWORD_ERROR("103", "账号或密码错误"),

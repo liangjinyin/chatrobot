@@ -17,6 +17,7 @@ public class Office extends BaseEntity implements Serializable {
 	/*private String grade;*/
 	private Integer parent; // 父级编号
 	private String parentIds; // 所有父级编号
+	private Integer expand;//是否有下级菜单，1 有，0 没有
 	
 	
 	public Office(){
@@ -49,8 +50,19 @@ public class Office extends BaseEntity implements Serializable {
 	}
 */
 	
+	
 	public String getParentIds() {
 		return parentIds;
+	}
+
+	
+
+	public Integer getExpand() {
+		return expand;
+	}
+
+	public void setExpand(Integer expand) {
+		this.expand = expand;
 	}
 
 	public Integer getParent() {

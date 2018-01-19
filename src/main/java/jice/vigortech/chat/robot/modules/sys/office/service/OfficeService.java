@@ -31,11 +31,13 @@ public class OfficeService extends BaseService{
 		
 		
 		try {
-			List<Map<String,Object>> officeAllList = officeDao.getAllOffice();;
+			/*Map<String,Object> officeAllList = officeDao.getParent();
+			List<Map<String,Object>> children = officeDao.getAllOffice();;
+			officeAllList.put("children", children);
+			data.put("list", officeAllList);*/
 			list = officeDao.getOfficeList(query);
 			total = officeDao.getOfficeCount(query);
 			
-			data.put("list", officeAllList);
 			data.put("officeList", list);
 			data.put("total", total);
 			return data;
@@ -116,8 +118,14 @@ public class OfficeService extends BaseService{
 	 */
 	public Object getOfficeAllList() {
 		try {
-			list = officeDao.getAllOffice();
-			data.put("officeAllList", list); 
+			/*list = officeDao.getAllOffice();
+			data.put("officeAllList", list); */
+			List<Map<String,Object>> officeAllList = officeDao.getParent();
+			List<Map<String,Object>> children = officeDao.getAllOffice();;
+			officeAllList.get(0).put("children", children);
+			
+			data.put("officeAllList", officeAllList);
+			
 			return data;
 		} catch (Exception e) {
 			e.printStackTrace();

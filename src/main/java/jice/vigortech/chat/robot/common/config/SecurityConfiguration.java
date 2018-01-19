@@ -34,7 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 		.formLogin()
-			.loginProcessingUrl(SysConstants.SYS_URL+"/login")
+			.loginProcessingUrl(SysConstants.SYS_URL+"/user/login")
 				.passwordParameter("password")
 				.usernameParameter("username")
 				.successHandler(loginHandler)
@@ -43,13 +43,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 		http.logout()
 			.logoutSuccessHandler(loginHandler)
-			.logoutUrl(SysConstants.SYS_URL+"/logout")
+			.logoutUrl(SysConstants.SYS_URL+"/user/logout")
 			.invalidateHttpSession(true)
 			.deleteCookies("JSESSIONID");
 		//TODO
 		http.authorizeRequests()
 			//越细的权限放在后面	
-			.antMatchers(SysConstants.SYS_URL+"/login").hasAnyRole("SYS_USER","SYS_ADMIN")
+			.antMatchers(SysConstants.SYS_URL+"/user/login").hasAnyRole("SYS_USER","SYS_ADMIN")
 			/*.antMatchers(SysConstants.SYS_URL+"/intent/**").hasRole(SysConstants.SYS_USE_INTENT)
 			.antMatchers(SysConstants.SYS_URL+"/dict/**").hasRole(SysConstants.SYS_USE_DICT)
 			.antMatchers(SysConstants.SYS_URL+"/app/**").hasRole(SysConstants.SYS_USE_APP)
