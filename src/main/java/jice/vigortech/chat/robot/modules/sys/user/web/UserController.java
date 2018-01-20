@@ -1,6 +1,7 @@
 package jice.vigortech.chat.robot.modules.sys.user.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -89,11 +90,24 @@ public class UserController extends BaseController{
 		return Result();
 	}
 	
-	@RequestMapping("/login")
-	public String login(User user/*,@RequestParam("code")MobileCode code*/){
+	/*@RequestMapping("/login")
+	public String login(User user,@RequestParam("code")MobileCode code){
 		data = null;
 		resCode = ResultCode.OPERATION_SUCCESSED;
 		System.out.println("skasdhfklshdk哈哈");
 		return Result();
+	}*/
+	@RequestMapping("/chg-passwd")
+	public String chgPasswd(@RequestParam("password") String password, @RequestParam("newPassword") String newPassword) {
+		if(StringUtils.isEmpty(password) || StringUtils.isEmpty(newPassword)) {
+			resCode = ResultCode.USER_PASSWORD_EMPTY;
+		} else if(password.equals(newPassword)) {
+			resCode = ResultCode.USER_PASSWORD_NEW_SAMEWITH_OLD;
+		} else {
+			resCode = userService.chgPasswd(password, newPassword);
+		}
+		data = null;
+		return Result();
 	}
+	
 }

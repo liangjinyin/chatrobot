@@ -34,11 +34,10 @@ public class SecretService extends BaseService{
 			if(user==null){
 				return ResultCode.SESSION_INVALID;
 			}
-			query.setSql(super.dataScopeFilter(user, "oy", "uy"));
 			list = secretDao.getSecretList(query);
 			total = secretDao.getSecretCount(query);
 			data.put("total",total);
-			data.put("roleList",list);
+			data.put("secretList",list);
 			return data;
 		} catch (Exception e) {
 			e.printStackTrace();

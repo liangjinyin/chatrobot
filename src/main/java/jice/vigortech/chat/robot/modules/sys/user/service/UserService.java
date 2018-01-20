@@ -14,8 +14,10 @@ import jice.vigortech.chat.robot.common.model.service.BaseService;
 import jice.vigortech.chat.robot.common.util.AESUtil;
 import jice.vigortech.chat.robot.common.util.Md5PasswordEncoderWithSalt;
 import jice.vigortech.chat.robot.common.util.SecurityUtils;
+import jice.vigortech.chat.robot.modules.sys.menu.dao.MenuDao;
 import jice.vigortech.chat.robot.modules.sys.office.dao.OfficeDao;
 import jice.vigortech.chat.robot.modules.sys.role.dao.RoleDao;
+import jice.vigortech.chat.robot.modules.sys.role.entity.Role;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.dao.MobileCodeDao;
 import jice.vigortech.chat.robot.modules.sys.user.dao.UserDao;
@@ -33,6 +35,9 @@ public class UserService extends BaseService{
 	RoleDao roleDao;
 	@Autowired
 	MobileCodeDao codeDao;
+	@Autowired
+	MenuDao menuDao;
+	
 	/**
 	 * 获取用户列表
 	 * @param query
@@ -119,9 +124,8 @@ public class UserService extends BaseService{
 	public ResultCode chgPasswd(String password, String newPassword) {
 		User user  = SecurityUtils.getCurrentUser();
 		if(user==null){
-			return ResultCode.OPERATION_NOT_PERMITTED;
+			return ResultCode.SESSION_INVALID;
 		}
-		
 		try {
 			userDao.chgPasswd(Md5PasswordEncoderWithSalt.encodePassword(newPassword),user.getId());
 			return ResultCode.OPERATION_SUCCESSED;
@@ -175,7 +179,16 @@ public class UserService extends BaseService{
 		Map<String,Object> token = null; 
 		try {
 			token = userDao.getTokenByUserName(username);
-			return token;
+			User user = userDao.getUserByUserName(username);//获取该用户下的菜单
+			if("admin".equals(username)) {
+				list = userDao.getUserMenu();
+			} else {
+				List<Role> roleList = roleDao.getRoleByUser(user.getId());//获取该用户的角色
+				list = userDao.getUesrRoleMenu(roleList);
+			}
+			data.put("menuList", list);
+			data.put("token", token);
+			return data;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResultCode.OPERATION_FAILED;

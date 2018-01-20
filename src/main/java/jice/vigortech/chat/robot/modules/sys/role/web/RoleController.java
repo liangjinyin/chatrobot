@@ -102,6 +102,13 @@ public class RoleController extends BaseController {
 		return Result();
 	}
 	
+	@RequestMapping("/role_add_menu")
+	public String addRoleMenu(@RequestParam("id") Integer id,@RequestParam("menuIds")String menuIds){
+		data = null;
+		resCode = roleService.addRoleMenu(id,menuIds);
+		return Result();
+	}
+	
 	@RequestMapping("/role_remove_theme")
 	public String removeRoleTheme(@RequestParam("themeId")Integer themeId){
 		data = null;

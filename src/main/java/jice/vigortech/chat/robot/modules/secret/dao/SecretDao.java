@@ -18,10 +18,9 @@ public interface SecretDao {
 	@Select("<script>"
 			+ "select a.id,a.name,a.describe,a.create_by createBy,a.update_date updateDate, a.create_date createDate "
 			+ "from sys_secret a "
-			+ "LEFT JOIN sys_user uy ON uy.name=a.create_by "
-			+ "LEFT JOIN sys_office oy ON oy.id = uy.office_id "
+			
 			+ "where a.del_flag=0 "
-			+ "${sql} "
+			
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
 			+ "</if> "
@@ -36,10 +35,9 @@ public interface SecretDao {
 	@Select("<script>"
 			+ "select count(1) "
 			+ "from sys_secret a "
-			+ "LEFT JOIN sys_user uy ON uy.name=a.create_by "
-			+ "LEFT JOIN sys_office oy ON oy.id = uy.office_id "
+			
 			+ "where a.del_flag=0 "
-			+ "${sql} "
+			
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
 			+ "</if> "
@@ -49,14 +47,14 @@ public interface SecretDao {
 			+ "</script>")
 	int getSecretCount(PageQuery query);
 	
-	@Update("update sys_secret set del_flag=0 where id=${id}")
+	@Update("update sys_secret set del_flag=1 where id=${id}")
 	int deleteSecretById(@Param("id")Integer id);
 	
 	@Insert("insert into sys_secret(`name`,`describe`,create_by,update_date,create_date) "
 			+ "values(#{name},#{describe},#{createBy.username},#{updateDateString},#{updateDateString})")
 	int insertSecret(Secret secret);
 	
-	@Update("update sys_secret name=#{name},`describe`=#{describe},update_date=#{updateDateString} "
+	@Update("update sys_secret set name=#{name},`describe`=#{describe},update_date=#{updateDateString} "
 			+ "where id=#{id}")
 	int updateSecret(Secret secret);
 
@@ -67,5 +65,8 @@ public interface SecretDao {
 	
 	@Delete("delete from sys_role_secret where secret_id=${id}")
 	int deleteRoleSecret(@Param("id")Integer id);
+	
+	@Select("select id,name from sys_secret where del_flag=0")
+	List<Map<String, Object>> getSecretAllList();
 
 }

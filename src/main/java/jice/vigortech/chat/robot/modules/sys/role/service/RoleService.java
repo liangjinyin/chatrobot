@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jice.vigortech.chat.robot.common.constants.ResultCode;
 import jice.vigortech.chat.robot.common.model.service.BaseService;
 import jice.vigortech.chat.robot.common.util.SecurityUtils;
+import jice.vigortech.chat.robot.modules.secret.dao.SecretDao;
 import jice.vigortech.chat.robot.modules.sys.office.dao.OfficeDao;
 import jice.vigortech.chat.robot.modules.sys.office.entity.Office;
 import jice.vigortech.chat.robot.modules.sys.role.dao.RoleDao;
@@ -18,6 +19,7 @@ import jice.vigortech.chat.robot.modules.sys.role.entity.Role;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.dao.UserDao;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
+import jice.vigortech.chat.robot.modules.theme.dao.ThemeDao;
 
 @Service
 @Transactional(readOnly=true,rollbackFor=Exception.class)
@@ -29,6 +31,10 @@ public class RoleService extends BaseService{
 	UserDao userDao;
 	@Autowired
 	OfficeDao officeDao;
+	@Autowired
+	ThemeDao themeDao;
+	@Autowired
+	SecretDao secretDao;
 	
 	/**
 	 * 获取角色列表
@@ -182,7 +188,6 @@ public class RoleService extends BaseService{
 					roleDao.addRoleUser(Integer.parseInt(userId),id);
 				}
 			}
-			
 			return ResultCode.OPERATION_SUCCESSED;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -278,13 +283,41 @@ public class RoleService extends BaseService{
 	 */
 	public Object getRoleTsList(Integer id) {
 		try {
+			
 			List<Map<String,Object>> themeList = roleDao.getRoleThemeList(id);
 			List<Map<String,Object>> secretList = roleDao.getRoleSecretList(id);
+			List<Map<String,Object>> themeAllList = themeDao.getThemeAllList();
+			List<Map<String,Object>> secretAllList = secretDao.getSecretAllList();
 			Map<String,Object> roleDetail = roleDao.getRoleById(id);
 			data.put("roleDetail", roleDetail);
 			data.put("themeList", themeList);
 			data.put("secretList", secretList);
+			data.put("themeAllList", themeAllList);
+			data.put("secretAllList", secretAllList);
 			return data;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultCode.OPERATION_FAILED;
+		}
+	}
+	
+	/**
+	 * 给角色分配菜单
+	 * @param id 角色id
+	 * @param menuIds 
+	 * @return
+	 */
+	@Transactional(readOnly=false,rollbackFor=Exception.class)
+	public ResultCode addRoleMenu(Integer id, String menuIds) {
+		try {
+			roleDao.deleteMenuByRoleId(id);
+			if(StringUtils.isNoneBlank(menuIds)){
+				String[] split = menuIds.split(",");
+				for (String menuId : split) {
+					roleDao.addRoleMenu(Integer.parseInt(menuId),id);
+				}
+			}
+			return ResultCode.OPERATION_SUCCESSED;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResultCode.OPERATION_FAILED;

@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 
+import jice.vigortech.chat.robot.modules.sys.role.entity.Role;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
 @Mapper
@@ -110,4 +111,23 @@ public interface UserDao {
 			+ "where a.del_flag=0 "
 			+ "order by a.id ")
 	List<Map<String,Object>> getUserAllList();
+	
+	@Select("select menu_router menu from sys_menu order by sort ")
+	List<Map<String, Object>> getUserMenu();
+	
+	@Select("<script>"
+			+ "select DISTINCT(menu_router) menu "
+			+ "from sys_menu "
+			+ "where id in "
+			+ "(select menu_id from sys_role_menu where role_id in "
+			+ "("
+			+ "<foreach item=\"item\" collection=\"roleList\" separator=\",\"> "
+			+ "#{item.id}"
+			+ "</foreach>"
+			+ ")"
+			+ ") "
+			+ "order by sort "
+			+ "</script>")
+	List<Map<String, Object>> getUesrRoleMenu(@Param("roleList")List<Role> roleList);
+
 }

@@ -16,9 +16,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import jice.vigortech.chat.robot.common.constants.ResultCode;
 import jice.vigortech.chat.robot.common.model.web.BaseController;
@@ -31,18 +28,7 @@ public class LoginController extends BaseController implements LogoutSuccessHand
 	@Autowired
 	UserService userService;
 	
-	@RequestMapping("/chg-passwd")
-	public String chgPasswd(@RequestParam("password") String password, @RequestParam("newPassword") String newPassword) {
-		if(StringUtils.isEmpty(password) || StringUtils.isEmpty(newPassword)) {
-			resCode = ResultCode.USER_PASSWORD_EMPTY;
-		} else if(password.equals(newPassword)) {
-			resCode = ResultCode.USER_PASSWORD_NEW_SAMEWITH_OLD;
-		} else {
-			resCode = userService.chgPasswd(password, newPassword);
-		}
-		data = null;
-		return Result();
-	}
+	
 	
 	/**
 	 * 验证失败调用

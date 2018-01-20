@@ -28,11 +28,10 @@ public class ThemeService extends BaseService{
 	 */
 	public Object getThemeList(PageQuery query) {
 		try {
-			query.setSql(super.dataScopeFilter(SecurityUtils.getCurrentUser(), "oy", "uy"));
 			list = themeDao.getThemeList(query);
 			total = themeDao.getThemeCount(query);
 			data.put("total",total);
-			data.put("roleList",list);
+			data.put("themeList",list);
 			return data;
 		} catch (Exception e) {
 			e.printStackTrace();

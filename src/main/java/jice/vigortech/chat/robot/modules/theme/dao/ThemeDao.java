@@ -19,10 +19,7 @@ public interface ThemeDao {
 	@Select("<script>"
 			+ "select a.id,a.name,a.describe,a.create_by createBy,a.update_date updateDate, a.create_date createDate "
 			+ "from sys_theme a "
-			+ "LEFT JOIN sys_user uy ON uy.name=a.create_by "
-			+ "LEFT JOIN sys_office oy ON oy.id = uy.office_id "
 			+ "where a.del_flag=0 "
-			+ "${sql} "
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
 			+ "</if> "
@@ -37,10 +34,7 @@ public interface ThemeDao {
 	@Select("<script>"
 			+ "select count(1) "
 			+ "from sys_theme a "
-			+ "LEFT JOIN sys_user uy ON uy.name=a.create_by "
-			+ "LEFT JOIN sys_office oy ON oy.id = uy.office_id "
 			+ "where a.del_flag=0 "
-			+ "${sql} "
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
 			+ "</if> "
@@ -50,14 +44,14 @@ public interface ThemeDao {
 			+ "</script>")
 	int getThemeCount(PageQuery query);
 	
-	@Update("update sys_theme set del_flag=0 where id=${id}")
+	@Update("update sys_theme set del_flag=1 where id=${id}")
 	int deleteThemeById(@Param("id")Integer id);
 	
 	@Insert("insert into sys_theme(`name`,`describe`,create_by,update_date,create_date) "
 			+ "values(#{name},#{describe},#{createBy.username},#{updateDateString},#{updateDateString})")
 	int insertTheme(Theme theme);
 	
-	@Update("update sys_theme name=#{name},`describe`=#{describe},update_date=#{updateDateString} "
+	@Update("update sys_theme set name=#{name},`describe`=#{describe},update_date=#{updateDateString} "
 			+ "where id=#{id}")
 	int updateTheme(Theme theme);
 
@@ -68,5 +62,8 @@ public interface ThemeDao {
 
 	@Delete("delete from sys_role_theme where theme_id=${id}")
 	int deleteRoleTheme(@Param("id")Integer id);
+	
+	@Select("select id ,name from sys_theme where del_flag = 0 ")
+	List<Map<String, Object>> getThemeAllList();
 
 }

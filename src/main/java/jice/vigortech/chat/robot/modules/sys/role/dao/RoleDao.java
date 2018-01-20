@@ -92,11 +92,11 @@ public interface RoleDao {
 			+ "values(${userId},${roleId}) ")
 	int addRoleUser(@Param("userId")Integer userId, @Param("roleId")Integer id);
 	
-	@Insert("replace into sys_user_role (theme_id,role_id) "
+	@Insert("replace into sys_role_theme (theme_id,role_id) "
 			+ "values(${themeId},${roleId}) ")
 	int addRoleTheme(@Param("themeId")Integer themeId,@Param("roleId") Integer id);
 
-	@Insert("replace into sys_user_role (secret_id,role_id) "
+	@Insert("replace into sys_role_secret (secret_id,role_id) "
 			+ "values(${secretId},${roleId}) ")
 	int addRoleSecret(@Param("secretId")Integer secretId,@Param("roleId") Integer id);
 
@@ -125,4 +125,11 @@ public interface RoleDao {
 	
 	@Delete("delete from sys_role_theme where role_id=${id}")
 	int deleteSecretByRoleId(@Param("id")Integer id);
+
+	@Insert("replace into sys_role_menu (menu_id,role_id) "
+			+ "values(${menu_id},${roleId}) ")
+	int addRoleMenu(@Param("menu_id")Integer id,@Param("role_id")Integer id2);
+	
+	@Delete("delete from sys_role_menu where role_id=${id}")
+	int deleteMenuByRoleId(Integer id);
 }
