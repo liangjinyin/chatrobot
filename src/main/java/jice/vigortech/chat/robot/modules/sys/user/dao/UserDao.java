@@ -113,7 +113,7 @@ public interface UserDao {
 	List<Map<String,Object>> getUserAllList();
 	
 	@Select("select menu_router menu from sys_menu order by sort ")
-	List<Map<String, Object>> getUserMenu();
+	List<String> getUserMenu();
 	
 	@Select("<script>"
 			+ "select DISTINCT(menu_router) menu "
@@ -128,6 +128,6 @@ public interface UserDao {
 			+ ") "
 			+ "order by sort "
 			+ "</script>")
-	List<Map<String, Object>> getUesrRoleMenu(@Param("roleList")List<Role> roleList);
+	List<String> getUesrRoleMenu(@Param("roleList")List<Role> roleList);
 
 }

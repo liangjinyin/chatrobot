@@ -49,10 +49,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		//TODO
 		http.authorizeRequests()
 			//越细的权限放在后面	
-			.antMatchers(SysConstants.SYS_URL+"/user/login").hasAnyRole("SYS_USER","SYS_ADMIN")
-			/*.antMatchers(SysConstants.SYS_URL+"/intent/**").hasRole(SysConstants.SYS_USE_INTENT)
-			.antMatchers(SysConstants.SYS_URL+"/dict/**").hasRole(SysConstants.SYS_USE_DICT)
-			.antMatchers(SysConstants.SYS_URL+"/app/**").hasRole(SysConstants.SYS_USE_APP)
+			//.antMatchers(SysConstants.SYS_URL+"/user/login").hasAnyRole("SYS_USER","SYS_ADMIN")
+			/*.antMatchers(SysConstants.SYS_URL+"/intent/**").hasRole("SYS_MODEL")
+			.antMatchers(SysConstants.SYS_URL+"/dict/**").hasRole("SYS_MODEL")
+			.antMatchers(SysConstants.SYS_URL+"/app/**").hasRole("SYS_MODEL")
+			.antMatchers(SysConstants.SYS_URL+"/user/**").hasRole("SYS_POWER")
+			.antMatchers(SysConstants.SYS_URL+"/theme/**").hasRole("SYS_POWER")
+			.antMatchers(SysConstants.SYS_URL+"/secret/**").hasRole("SYS_POWER")
+			.antMatchers(SysConstants.SYS_URL+"/role/**").hasRole("SYS_POWER")
+			.antMatchers(SysConstants.SYS_URL+"/office/**").hasRole("SYS_POWER")
+			.antMatchers(SysConstants.SYS_URL+"/process/**").hasRole("SYS_FLOW")
+			.antMatchers(SysConstants.SYS_URL+"/mic_service/**").hasRole("SYS_SERVICE")
 			.antMatchers(SysConstants.SYS_URL + "/**").authenticated()*/
 			;
 		

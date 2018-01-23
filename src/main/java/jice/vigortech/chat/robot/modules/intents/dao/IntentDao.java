@@ -13,14 +13,14 @@ import org.apache.ibatis.annotations.Update;
 import jice.vigortech.chat.robot.modules.intents.entity.Ask;
 import jice.vigortech.chat.robot.modules.intents.entity.Entity;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
-import jice.vigortech.chat.robot.modules.intents.entity.Slot;
+import jice.vigortech.chat.robot.modules.intents.entity.Solt;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 
 @Mapper
 public interface IntentDao {
 	//添加场景
 	@Insert("insert into robot_scene "
-			+ "(app_id, name, rank,answer, act_name,create_date,update_date) "
+			+ "(app_id, name, rank,answer,act_name,create_date,update_date) "
 			+ "values(#{appId}, #{name}, #{rank},#{answer}, #{actionName},#{updateDateString} "
 			+ "#{updateDateString}) "
 			)
@@ -42,7 +42,7 @@ public interface IntentDao {
 	@Insert("insert into robot_scene_slot("
 			+ "int_id,flag,dict_name,type_name,`message`,def_value) "
 			+ "values(#{intentId}, #{flag}, #{dictName}, #{typeName}, #{message},#{defValue} )")
-	Integer insertAction(Slot action);
+	Integer insertAction(Solt action);
 	
 	
 	//删除场景
@@ -74,7 +74,7 @@ public interface IntentDao {
 			+ "`message`=#{message},flag=#{flag},def_value=#{defValue} "
 			+ "where id = #{id}"
 			)
-	int updateAction(Slot slot);
+	int updateAction(Solt slot);
 	
 	
 	//查询场景信息

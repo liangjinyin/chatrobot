@@ -2,7 +2,7 @@ package jice.vigortech.chat.robot.modules.intents.entity;
 
 import java.io.Serializable;
 
-public class Slot implements Serializable{
+public class Solt implements Serializable{
 
 	/**
 	 * 动作

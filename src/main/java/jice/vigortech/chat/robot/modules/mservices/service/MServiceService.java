@@ -60,7 +60,7 @@ public class MServiceService extends BaseService{
 			//添加
 			try{
 				micService.setCreateBy(user);
-				save(micService);
+				save(micService,user);
 				return ResultCode.OPERATION_SUCCESSED;
 			}catch(Exception e){
 				e.printStackTrace();
@@ -73,7 +73,7 @@ public class MServiceService extends BaseService{
 					return ResultCode.MIC_NOT_EXIST;
 				}
 				delete(micService.getId());
-				save(micService);
+				save(micService,user);
 				return ResultCode.OPERATION_SUCCESSED; 
 			}catch(Exception e){
 				e.printStackTrace();
@@ -102,8 +102,7 @@ public class MServiceService extends BaseService{
 	}
 
 	
-	private void save(MicService micService){
-		User user = SecurityUtils.getCurrentUser();
+	private void save(MicService micService,User user){
 		micService.setCreateBy(user);
 		if(mServiceDao.saveMicService(micService)>0){
 			if(micService.getInterList()!=null){

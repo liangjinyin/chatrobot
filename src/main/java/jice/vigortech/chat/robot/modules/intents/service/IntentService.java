@@ -14,7 +14,7 @@ import jice.vigortech.chat.robot.modules.intents.dao.IntentDao;
 import jice.vigortech.chat.robot.modules.intents.entity.Ask;
 import jice.vigortech.chat.robot.modules.intents.entity.Entity;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
-import jice.vigortech.chat.robot.modules.intents.entity.Slot;
+import jice.vigortech.chat.robot.modules.intents.entity.Solt;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 
 @Service
@@ -150,10 +150,10 @@ public class IntentService {
 				}
 			}
 		}
-		if(intent.getSlotList()!=null){
-			for(Slot Slot :intent.getSlotList()){
-				Slot.setIntentId(intent.getId());
-				intentDao.insertAction(Slot);
+		if(intent.getSoltList()!=null){
+			for(Solt Solt :intent.getSoltList()){
+				Solt.setIntentId(intent.getId());
+				intentDao.insertAction(Solt);
 			}
 		}
 	}

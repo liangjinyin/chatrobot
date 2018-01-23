@@ -34,9 +34,11 @@ public interface AppDao {
 
 	@Select("<script>"
 			+ "select DISTINCT(a.id),a.name ,a.create_date createDate,a.update_date updateDate,a.create_by createBy "
+			/*+ ",b.name micService "*/
 			+ "from robot_app a "
 			+ "LEFT JOIN sys_user uy ON uy.name=a.create_by "
 			+ "LEFT JOIN sys_office oy ON oy.id = uy.office_id "
+			/*+ "left join sys_mic_service b on b.id = a.mic_service "*/
 			+ "where a.del_flag=0 ${sql} "
 			+ "<if test=\"name != null and name != ''\">"
 			+ "and a.name like concat('%', #{name}, '%') "
@@ -68,11 +70,11 @@ public interface AppDao {
 	Integer deleteApp(@Param("id")Integer id);
 
 	@Insert("insert into robot_app ( "
-			+ "`name`,is_private,`describe`,link,`language`,zone,client_token,dev_token, "
+			+ "`name`,is_private,`describe`,link,`language`,zone,client_token,dev_token,mic_service, "
 			+ "def_reply,storage,create_by,create_date,update_date ) "
 			+ "values( "
 			+ "#{name},#{isPrivate},#{describe},#{link},#{language},#{zone}, "
-			+ "#{clientToken},#{devToken},#{defReply},#{storage},#{createBy.username},#{createDateString}, "
+			+ "#{clientToken},#{devToken},#{micService},#{defReply},#{storage},#{createBy.username},#{createDateString}, "
 			+ "#{updateDateString} ) "
 			)
 	Integer insertApp(Application app);
@@ -80,7 +82,7 @@ public interface AppDao {
 	@Update("update robot_app "
 			+ "set `name`=#{app.name},is_private=#{app.isPrivate} , "
 			+ "`describe`=#{app.describe},link=#{app.link},`language`=#{app.language},zone=#{app.zone}, "
-			+ "client_token=#{app.clientToken},dev_token=#{app.devToken}, def_reply=#{app.defReply}, "
+			+ "client_token=#{app.clientToken},dev_token=#{app.devToken}, mic_service=#{app.micService},def_reply=#{app.defReply}, "
 			+ "storage=#{app.storage}, update_date = #{app.updateDateString} "
 			+ "where id=#{app.id}")
 	Integer updateApp(@Param("app")Application app);

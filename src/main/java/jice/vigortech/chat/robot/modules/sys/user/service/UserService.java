@@ -177,16 +177,17 @@ public class UserService extends BaseService{
 	 */
 	public Object getUserTokenByUserName(String username) {
 		Map<String,Object> token = null; 
+		List<String> menu = null;
 		try {
 			token = userDao.getTokenByUserName(username);
 			User user = userDao.getUserByUserName(username);//获取该用户下的菜单
 			if("admin".equals(username)) {
-				list = userDao.getUserMenu();
+				menu = userDao.getUserMenu();
 			} else {
 				List<Role> roleList = roleDao.getRoleByUser(user.getId());//获取该用户的角色
-				list = userDao.getUesrRoleMenu(roleList);
+				menu = userDao.getUesrRoleMenu(roleList);
 			}
-			data.put("menuList", list);
+			data.put("menuList", menu);
 			data.put("token", token);
 			return data;
 		} catch (Exception e) {

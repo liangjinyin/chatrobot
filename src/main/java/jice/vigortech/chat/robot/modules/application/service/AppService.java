@@ -16,6 +16,7 @@ import jice.vigortech.chat.robot.modules.dicts.dao.DictDao;
 import jice.vigortech.chat.robot.modules.dicts.entity.Dicts;
 import jice.vigortech.chat.robot.modules.intents.dao.IntentDao;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
+import jice.vigortech.chat.robot.modules.mservices.dao.MSerivceDao;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
 
@@ -29,6 +30,8 @@ public class AppService extends BaseService{
 	IntentDao intentDao;
 	@Autowired
 	DictDao dictDao;
+	@Autowired
+	private MSerivceDao mServiceDao;
 
 	/**
 	 * 删除应用,级联删除 应用下的场景和词库
@@ -124,5 +127,20 @@ public class AppService extends BaseService{
 		// 权限的校验
 		Map<String, Object> detail = appDao.getAppById(id);
 		return detail;
+	}
+
+	/**
+	 * 获取所有的微服务信息
+	 * @return
+	 */
+	public Object getMicService(PageQuery query) {
+		try {
+			list = mServiceDao.getMicServiceList(query);
+			data.put("micServiceList",list);
+			return data;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultCode.OPERATION_FAILED;
+		}
 	}
 }

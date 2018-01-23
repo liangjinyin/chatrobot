@@ -80,4 +80,16 @@ public class ApplicationController extends BaseController{
 		}
 		return Result();
 	}
+	
+	@RequestMapping("/to_app")
+	public String getOther(PageQuery query){
+		data = appService.getMicService(query);
+		if(data instanceof ResultCode){
+			resCode = (ResultCode) data;
+			data = null;
+		}else{
+			resCode = ResultCode.OPERATION_SUCCESSED;
+		}
+		return Result();
+	}
 }

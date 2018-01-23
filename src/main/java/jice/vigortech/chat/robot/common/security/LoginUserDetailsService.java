@@ -49,7 +49,7 @@ public class LoginUserDetailsService implements UserDetailsService{
 		List<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
 		List<String> authKeys = null;
 		for (Role role : list) {
-			//TODO 将getEnName换成具体的名称
+			
 			if(role.getEnName().equalsIgnoreCase("sys_admin")){
 				authKeys = userDao.getSuperAuthRole();
 			}else{

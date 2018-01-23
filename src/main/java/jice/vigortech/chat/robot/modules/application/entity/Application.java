@@ -22,6 +22,7 @@ public class Application extends BaseEntity implements Serializable {
 	private String clientToken;
 	private String devToken;
 	private String describe;
+	private Integer micService;//该应用对应的微服务
 	private String defReply;// 默认回复
 	private String storage;//存储方式
 	
@@ -124,6 +125,14 @@ public class Application extends BaseEntity implements Serializable {
 
 	public void setStorage(String storage) {
 		this.storage = storage;
+	}
+
+	public Integer getMicService() {
+		return micService;
+	}
+
+	public void setMicService(Integer micService) {
+		this.micService = micService;
 	}
 
 
