@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Update;
 import jice.vigortech.chat.robot.modules.intents.entity.Ask;
 import jice.vigortech.chat.robot.modules.intents.entity.Entity;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
+import jice.vigortech.chat.robot.modules.intents.entity.Mark;
 import jice.vigortech.chat.robot.modules.intents.entity.Solt;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 
@@ -20,8 +21,8 @@ import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 public interface IntentDao {
 	//添加场景
 	@Insert("insert into robot_scene "
-			+ "(app_id, name, rank,answer,act_name,create_date,update_date) "
-			+ "values(#{appId}, #{name}, #{rank},#{answer}, #{actionName},#{updateDateString} "
+			+ "(app_id, name, rank,answer,input,`check`,act_name,create_date,update_date) "
+			+ "values(#{appId}, #{name}, #{rank},#{answer},#{input}, #{check},#{actionName},#{updateDateString} "
 			+ "#{updateDateString}) "
 			)
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
@@ -44,20 +45,28 @@ public interface IntentDao {
 			+ "values(#{intentId}, #{flag}, #{dictName}, #{typeName}, #{message},#{defValue} )")
 	Integer insertAction(Solt action);
 	
+	@Insert("insert into robot_scene_mark("
+			+ "int_id,app_id,name,ask,lifecycle) "
+			+ "values(#{intId},#{appId},#{name},#{ask},#{lifecycle})")
+	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
+	int insertOutput(Mark output);
 	
 	//删除场景
+	
 	@Update("update robot_scene set del_flag = 1 where id = ${id}")
 	Integer deleteIntent(@Param("id")Integer id);
 	@Update("update robot_scene_slot set del_flag = 1 where int_id = ${id}")
-	Integer deleteSlot(@Param("id")Integer id);
+	Integer deleteSolt(@Param("id")Integer id);
 	@Update("update robot_scene_ask_entitys set del_flag=1 where ask_id=${id}")
 	int deleteEntityListByAId(@Param("id")Integer aid);
 	@Update("update robot_scene_ask set del_flag=1 where intent=#{name}")
 	int deleteAskByName(@Param("name")String iname);
+	@Update("update robot_scene_mark set del_flag=1 where int_id=${id}")
+	int deleteOutput(@Param("id")Integer id);
 	
 	//更新场景
-	@Update("update robot_scene set name=#{name},rank=#{rank},act_name=#{actionName},answer=#{answer}, "
-			+ "update_date=#{updateDateString} where id=#{id}"
+	@Update("update robot_scene set name=#{name},rank=#{rank},act_name=#{actionName},answer=#{answer},input=#{input}, "
+			+ "output=#{outputId},`check`=#{check},update_date=#{updateDateString} where id=#{id}"
 			)
 	int updateIntent(Intents intent);
 	@Update(
@@ -78,7 +87,7 @@ public interface IntentDao {
 	
 	
 	//查询场景信息
-	@Select("select id id,app_id appId,name name,rank rank,act_name actionName, "
+	@Select("select id id,app_id appId,input,name,`check`,rank,act_name actionName, "
 			+ "update_date updateDate "
 			+ "from robot_scene "
 			+ "where del_flag=0 and id=${id} "
@@ -126,4 +135,13 @@ public interface IntentDao {
 	@Select("select id ,name from robot_scene where del_flag=0 and name=#{name}")
 	Map<String,Object> checkByName(@Param("name")String name);
 	
+	@Select("select id ,name,ask,lifecycle from robot_scene_mark where del_flag=0 and int_id=${id}")
+	List<Map<String, Object>> getMarkListByIid(@Param("id")Integer id);
+	
+	@Select("select id ,name,ask,lifecycle from robot_scene_mark where del_flag=0 and app_id=${id}")
+	List<Map<String, Object>> getMarkListByAppId(@Param("id")Integer id);
+	
+	@Select("select id ,name from robot_scene_mark where  id in (${id})")
+	List<Map<String, Object>> getMarkById(@Param("id")String id);
+
 }

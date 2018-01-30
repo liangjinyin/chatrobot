@@ -1,8 +1,5 @@
 package jice.vigortech.chat.robot.modules.mservices.service;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +10,6 @@ import jice.vigortech.chat.robot.common.util.SecurityUtils;
 import jice.vigortech.chat.robot.modules.mservices.dao.MSerivceDao;
 import jice.vigortech.chat.robot.modules.mservices.entity.Iattribute;
 import jice.vigortech.chat.robot.modules.mservices.entity.MicService;
-import jice.vigortech.chat.robot.modules.mservices.entity.Minterface;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
 
@@ -34,8 +30,8 @@ public class MServiceService extends BaseService{
 			if(user==null){
 				return ResultCode.SESSION_INVALID;
 			}
-			query.setSql(super.dataScopeFilter(user, "oy", "uy"));
-			list =  mServiceDao.getMicServiceList(query);
+			//query.setSql(super.dataScopeFilter(user, "oy", "uy"));
+			list = mServiceDao.getMicServiceList(query);
 			total =  mServiceDao.getMicServiceCount(query);
 			data.put("mServiceList", list);
 			data.put("total", total);
@@ -60,7 +56,7 @@ public class MServiceService extends BaseService{
 			//添加
 			try{
 				micService.setCreateBy(user);
-				save(micService,user);
+				save(micService);
 				return ResultCode.OPERATION_SUCCESSED;
 			}catch(Exception e){
 				e.printStackTrace();
@@ -72,8 +68,8 @@ public class MServiceService extends BaseService{
 				if(mServiceDao.getMicServiceById(micService.getId())==null){
 					return ResultCode.MIC_NOT_EXIST;
 				}
-				delete(micService.getId());
-				save(micService,user);
+				mServiceDao.deleteArrt(micService.getId());
+				save(micService);
 				return ResultCode.OPERATION_SUCCESSED; 
 			}catch(Exception e){
 				e.printStackTrace();
@@ -92,7 +88,7 @@ public class MServiceService extends BaseService{
 			if(mServiceDao.getMicServiceById(id)==null){
 				return ResultCode.MIC_NOT_EXIST;
 			}
-			delete(id);
+			mServiceDao.deleteArrt(id);
 			mServiceDao.deleteMicService(id);
 			return ResultCode.OPERATION_SUCCESSED;
 		} catch (Exception e) {
@@ -101,32 +97,48 @@ public class MServiceService extends BaseService{
 		}
 	}
 
+	/**
+	 * 获取微服务详情
+	 * @param id
+	 * @return
+	 */
+	public Object getMicServiceDetail(Integer id) {
+		try {
+			/*MicService micService = mServiceDao.getMicServiceById(id);
+			List<Iattribute> arrt = mServiceDao.getMicArrtByMid(id);
+			micService.setAttrList(arrt);*/
+			
+			data = mServiceDao.getMicServiceById(id);
+			list = mServiceDao.getMicArrtByMid(id);
+			data.put("attrList", list);
+			return data;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultCode.OPERATION_FAILED;
+		}
+	}
 	
-	private void save(MicService micService,User user){
-		micService.setCreateBy(user);
-		if(mServiceDao.saveMicService(micService)>0){
-			if(micService.getInterList()!=null){
-				for (Minterface temp1 : micService.getInterList()) {
-					temp1.setMid(micService.getId());
-					if(mServiceDao.saveMinterface(temp1)>0){
-						if(temp1.getAttrList()!=null){
-							for(Iattribute temp2:temp1.getAttrList()){
-								temp2.setIid(temp1.getId());
-								mServiceDao.saveArrt(temp2);
-							}
-						}
-					}
-				}
+	private void save(MicService micService) {
+		//合成微服务接口
+		String interfaces = micService.getUrl();
+		String temp1 = null;
+		if(micService.getAttrList()!=null){
+			for (Iattribute arrt : micService.getAttrList()) {
+				temp1 = arrt.getName()+"="+arrt.getValue()+"&";
+				interfaces += temp1;
+			}
+			micService.setInterfaces(interfaces.substring(0, interfaces.length()-1));
+		}else{
+			micService.setInterfaces(interfaces);
+		}
+		
+		mServiceDao.saveMicService(micService);
+		if(micService.getAttrList()!=null){
+			for (Iattribute temp : micService.getAttrList()) {
+				temp.setMid(micService.getId());
+				mServiceDao.saveArrt(temp);
 			}
 		}
 	}
-	
-	private void delete(Integer id) {
-		List<Map<String,Object>> interList = mServiceDao.getMinterfaceByMid(id);
-		for (Map<String, Object> map : interList) {
-			mServiceDao.deleteArrt((Integer)map.get("id"));
-		}
-		mServiceDao.deleteMinterface(id);
-	}
-	
+
 }

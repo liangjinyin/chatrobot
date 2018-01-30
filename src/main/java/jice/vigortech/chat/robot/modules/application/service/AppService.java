@@ -53,7 +53,8 @@ public class AppService extends BaseService{
 					intentDao.deleteEntityListByAId((Integer) map.get("id"));
 				}
 				intentDao.deleteIntent(intents.getId());
-				intentDao.deleteSlot(intents.getId());
+				intentDao.deleteSolt(intents.getId());
+				intentDao.deleteOutput(intents.getId());
 			}
 			List<Dicts> dictList = dictDao.getDictByAppId(id);
 			for (Dicts dicts : dictList) {
@@ -112,6 +113,15 @@ public class AppService extends BaseService{
 			return ResultCode.SESSION_INVALID;
 		}
 		query.setSql(super.dataScopeFilter(user, "oy", "uy"));
+		if(user.getUsername().equals("admin")){
+			
+		}else{
+			//任何角色都可以看到公共的APP
+			int len = query.getSql().length()-1;
+			String sql = query.getSql().substring(0, len);
+			sql = sql+" or a.is_private=1)";
+			query.setSql(sql);
+		}
 		list = appDao.getAllAppList(query);
 		data.put("list", list);
 		data.put("total",appDao.getAppCount(query));

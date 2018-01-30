@@ -187,8 +187,9 @@ public class UserService extends BaseService{
 				List<Role> roleList = roleDao.getRoleByUser(user.getId());//获取该用户的角色
 				menu = userDao.getUesrRoleMenu(roleList);
 			}
-			data.put("menuList", menu);
-			data.put("token", token);
+			data.put("menuList",menu);
+			data.put("token",token);
+			data.put("username",username);
 			return data;
 		} catch (Exception e) {
 			e.printStackTrace();

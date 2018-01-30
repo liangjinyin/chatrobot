@@ -11,48 +11,60 @@ public class MicService extends BaseEntity implements Serializable {
 	 * 微服务
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private Integer id;
-	private String name;
-	private String ip;
-	private String ename;
-	private String describe;
-	private List<Minterface> interList;
-	
-	public List<Minterface> getInterList() {
-		return interList;
-	}
-	public void setInterList(List<Minterface> interList) {
-		this.interList = interList;
-	}
+
+	private Integer id;// 微服务id
+	private String name;// 名称
+	private String interfaces;//接口
+	private String url;//完整的url
+	private String describe;//描述
+	private List<Iattribute> attrList;
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getIp() {
-		return ip;
+
+	public String getInterfaces() {
+		return interfaces;
 	}
-	public void setIp(String ip) {
-		this.ip = ip;
+
+	public void setInterfaces(String interfaces) {
+		this.interfaces = interfaces;
 	}
-	public String getEname() {
-		return ename;
+
+	public String getUrl() {
+		return url;
 	}
-	public void setEname(String ename) {
-		this.ename = ename;
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
+
 	public String getDescribe() {
 		return describe;
 	}
+
 	public void setDescribe(String describe) {
 		this.describe = describe;
 	}
+
+	public List<Iattribute> getAttrList() {
+		return attrList;
+	}
+
+	public void setAttrList(List<Iattribute> attrList) {
+		this.attrList = attrList;
+	}
+
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import jice.vigortech.chat.robot.modules.intents.dao.IntentDao;
 import jice.vigortech.chat.robot.modules.intents.entity.Ask;
 import jice.vigortech.chat.robot.modules.intents.entity.Entity;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
+import jice.vigortech.chat.robot.modules.intents.entity.Mark;
 import jice.vigortech.chat.robot.modules.intents.entity.Solt;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 
@@ -99,8 +101,10 @@ public class IntentService {
 		//TODO 优化
 		Map<String,Object> data = new HashMap<String,Object>();
 		List<Map<String,Object>> list = intentDao.getIntentList(query,id);
+		List<Map<String,Object>> outputList = intentDao.getMarkListByAppId(id);
 		
 		data.put("list", list);
+		data.put("outputList", outputList);
 		data.put("total",intentDao.getIntentCount(query,id));
 		return data;
 	}
@@ -122,10 +126,28 @@ public class IntentService {
 			List<Map<String,Object>> entityList = intentDao.getEntityListByAId(aid);
 			map.put("entitys", entityList);
 		}
-		List<Map<String,Object>> slot = intentDao.getActionListByIid(id);
+		List<Map<String,Object>> solt = intentDao.getActionListByIid(id);
+		List<Map<String,Object>> output = intentDao.getMarkListByIid(id);
+		
+		//将输入和检测封装成对象返回
+		String inputId  = (String) intent.get("input");
+		List<Map<String, Object>> inputObj = null;
+		List<Map<String, Object>> checkIdObj = null;
+		if(StringUtils.isNoneEmpty(inputId)){
+			inputObj = intentDao.getMarkById(inputId);
+		}
+		String checkId  = (String) intent.get("check");
+		if(StringUtils.isNotEmpty(checkId)){
+			checkIdObj = intentDao.getMarkById(checkId);
+		}
+		
 		intent.put("askList", askList);
-		intent.put("slotList", slot);
+		intent.put("slotList", solt);
+		intent.put("output", output);
+		intent.put("inputObj", inputObj);
+		intent.put("checkIdObj", checkIdObj);
 		data.put("intent", intent);
+		//data.put("kkk", getIntentDetail(1));
 		return data;
 	}
 	
@@ -141,23 +163,37 @@ public class IntentService {
 							entity.setAskId(ask.getId());
 							String value = entity.getValue();
 							int start = text.indexOf(value);
-							int end = start+value.length()-1;
+							int end = start+value.length();
 							entity.setStart(start);
 							entity.setEnd(end);
 							intentDao.insertEntity(entity);
 						}
-					}
+					} 
 				}
 			}
 		}
+		//添加solt
 		if(intent.getSoltList()!=null){
-			for(Solt Solt :intent.getSoltList()){
-				Solt.setIntentId(intent.getId());
-				intentDao.insertAction(Solt);
+			for(Solt solt :intent.getSoltList()){
+				solt.setIntentId(intent.getId());
+				intentDao.insertAction(solt);
+			}
+		}
+		if(intent.getOutput()!=null){
+			String id = "";
+			for(Mark output :intent.getOutput()){
+				output.setIntId(intent.getId());
+				output.setAppId(intent.getAppId());
+				if(intentDao.insertOutput(output)>0){
+					id += output.getId()+",";
+				}
+			}
+			if(id.length()>1){
+				intent.setOutputId(id.substring(0, id.length()-1));
+				intentDao.updateIntent(intent);
 			}
 		}
 	}
-	
 	
 	private void deleteAskAndSlot(Map<String,Object> intent,Integer id){
 		String iname = (String) intent.get("name");
@@ -167,6 +203,7 @@ public class IntentService {
 			intentDao.deleteEntityListByAId(aid);
 		}
 		intentDao.deleteAskByName(iname);
-		intentDao.deleteSlot(id);
+		intentDao.deleteSolt(id);
+		intentDao.deleteOutput(id);
 	}
 }

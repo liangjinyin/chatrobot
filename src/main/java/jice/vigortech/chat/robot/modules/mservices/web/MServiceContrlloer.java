@@ -53,10 +53,22 @@ public class MServiceContrlloer extends BaseController {
 	 * @return
 	 */
 	
-	@RequestMapping("delete")
+	@RequestMapping("/delete")
 	public String deleteMicService(@RequestParam("id")Integer id){
 		data = null;
 		resCode = mServiceService.deleteMicServiceById(id);
+		return Result();
+	}
+	
+	@RequestMapping("/detail")
+	public String getMicServiceDetail(@RequestParam("id")Integer id){
+		data = mServiceService.getMicServiceDetail(id);
+		if(data instanceof ResultCode){
+			resCode = (ResultCode) data;
+			data=null;
+		}else{
+			resCode = ResultCode.OPERATION_SUCCESSED;
+		}
 		return Result();
 	}
 }
