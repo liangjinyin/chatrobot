@@ -22,7 +22,7 @@ public interface IntentDao {
 	//添加场景
 	@Insert("insert into robot_scene "
 			+ "(app_id, name, rank,answer,input,`check`,act_name,create_date,update_date) "
-			+ "values(#{appId}, #{name}, #{rank},#{answer},#{input}, #{check},#{actionName},#{updateDateString} "
+			+ "values(#{appId}, #{name}, #{rank},#{answer},#{input}, #{check},#{actionName},#{updateDateString}, "
 			+ "#{updateDateString}) "
 			)
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
@@ -46,8 +46,8 @@ public interface IntentDao {
 	Integer insertAction(Solt action);
 	
 	@Insert("insert into robot_scene_mark("
-			+ "int_id,app_id,name,ask,lifecycle) "
-			+ "values(#{intId},#{appId},#{name},#{ask},#{lifecycle})")
+			+ "int_id,app_id,name,ask,y_hint,y_action,in_hint,in_action,on_hint,on_action,lifecycle) "
+			+ "values(#{intId},#{appId},#{name},#{ask},#{yHint},#{yAction},#{inHint},#{inAction},#{onHint},#{onAction},#{lifecycle})")
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
 	int insertOutput(Mark output);
 	
@@ -135,10 +135,12 @@ public interface IntentDao {
 	@Select("select id ,name from robot_scene where del_flag=0 and name=#{name}")
 	Map<String,Object> checkByName(@Param("name")String name);
 	
-	@Select("select id ,name,ask,lifecycle from robot_scene_mark where del_flag=0 and int_id=${id}")
+	@Select("select id ,name,ask,y_hint yHint,y_action yAction,in_hint inHint, "
+			+ "in_action inAction,on_hint onHint,on_action onAction,lifecycle from robot_scene_mark where del_flag=0 and int_id=${id}")
 	List<Map<String, Object>> getMarkListByIid(@Param("id")Integer id);
 	
-	@Select("select id ,name,ask,lifecycle from robot_scene_mark where del_flag=0 and app_id=${id}")
+	@Select("select id ,name,ask,y_hint yHint,y_action yAction,in_hint inHint, "
+			+ "in_action inAction,on_hint onHint,on_action onAction,lifecycle from robot_scene_mark where del_flag=0 and app_id=${id}")
 	List<Map<String, Object>> getMarkListByAppId(@Param("id")Integer id);
 	
 	@Select("select id ,name from robot_scene_mark where  id in (${id})")

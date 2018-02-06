@@ -56,6 +56,20 @@ public class MServiceService extends BaseService{
 			//添加
 			try{
 				micService.setCreateBy(user);
+				//合成微服务接口
+				String interfaces = micService.getUrl();
+				String temp1 = null;
+				if(micService.getAttrList()!=null){
+					for (Iattribute arrt : micService.getAttrList()) {
+						temp1 = arrt.getName()+"="+arrt.getValue()+"&";
+						interfaces += temp1;
+					}
+					micService.setInterfaces(interfaces.substring(0, interfaces.length()-1));
+				}else{
+					micService.setInterfaces(interfaces);
+				}
+				
+				mServiceDao.saveMicService(micService);
 				save(micService);
 				return ResultCode.OPERATION_SUCCESSED;
 			}catch(Exception e){
@@ -119,20 +133,7 @@ public class MServiceService extends BaseService{
 	}
 	
 	private void save(MicService micService) {
-		//合成微服务接口
-		String interfaces = micService.getUrl();
-		String temp1 = null;
-		if(micService.getAttrList()!=null){
-			for (Iattribute arrt : micService.getAttrList()) {
-				temp1 = arrt.getName()+"="+arrt.getValue()+"&";
-				interfaces += temp1;
-			}
-			micService.setInterfaces(interfaces.substring(0, interfaces.length()-1));
-		}else{
-			micService.setInterfaces(interfaces);
-		}
 		
-		mServiceDao.saveMicService(micService);
 		if(micService.getAttrList()!=null){
 			for (Iattribute temp : micService.getAttrList()) {
 				temp.setMid(micService.getId());

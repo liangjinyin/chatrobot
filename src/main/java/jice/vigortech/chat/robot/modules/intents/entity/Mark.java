@@ -14,6 +14,12 @@ public class Mark implements Serializable {
 	private Integer intId;//意图id
 	private String name;//名称
 	private String ask;//标识问题
+	private String yHint;//肯定回答的提示 
+	private String yAction;//肯定回答触发的动作
+	private String inHint;//否定回答的提示
+	private String inAction;//否定回答触发的动作
+	private String onHint;//否定回答的提示
+	private String onAction;//否定回答触发的动作
 	private String lifecycle;//生命周期
 	private Integer delFlag;
 	
@@ -59,6 +65,42 @@ public class Mark implements Serializable {
 	public void setLifecycle(String lifecycle) {
 		this.lifecycle = lifecycle;
 	}
+	public String getyHint() {
+		return yHint;
+	}
+	public void setyHint(String yHint) {
+		this.yHint = yHint;
+	}
 	
+	public String getyAction() {
+		return yAction;
+	}
+	public void setyAction(String yAction) {
+		this.yAction = yAction;
+	}
+	public String getInHint() {
+		return inHint;
+	}
+	public void setInHint(String inHint) {
+		this.inHint = inHint;
+	}
+	public String getInAction() {
+		return inAction;
+	}
+	public void setInAction(String inAction) {
+		this.inAction = inAction;
+	}
+	public String getOnHint() {
+		return onHint;
+	}
+	public void setOnHint(String onHint) {
+		this.onHint = onHint;
+	}
+	public String getOnAction() {
+		return onAction;
+	}
+	public void setOnAction(String onAction) {
+		this.onAction = onAction;
+	}
 	
 }
