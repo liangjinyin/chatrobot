@@ -173,8 +173,8 @@ public class IntentService {
 			}
 		}
 		//添加solt
-		if(intent.getSoltList()!=null){
-			for(Solt solt :intent.getSoltList()){
+		if(intent.getSlotList()!=null){
+			for(Solt solt :intent.getSlotList()){
 				solt.setIntentId(intent.getId());
 				intentDao.insertAction(solt);
 			}
@@ -205,5 +205,18 @@ public class IntentService {
 		intentDao.deleteAskByName(iname);
 		intentDao.deleteSolt(id);
 		intentDao.deleteOutput(id);
+	}
+	
+	/**
+	 * 获取所有的意图
+	 * @return
+	 */
+	public Object getAllIntents() {
+		try {
+			return intentDao.getAllIntents();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultCode.OPERATION_FAILED;
+		}
 	}
 }

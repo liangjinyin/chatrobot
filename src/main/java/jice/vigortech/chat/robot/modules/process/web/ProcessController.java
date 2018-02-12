@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jice.vigortech.chat.robot.common.constants.ResultCode;
 import jice.vigortech.chat.robot.common.constants.SysConstants;
 import jice.vigortech.chat.robot.common.model.web.BaseController;
+import jice.vigortech.chat.robot.modules.intents.service.IntentService;
 import jice.vigortech.chat.robot.modules.process.entiry.Processes;
 import jice.vigortech.chat.robot.modules.process.service.ProcessService;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
@@ -18,6 +19,9 @@ public class ProcessController extends BaseController {
 
 	@Autowired
 	ProcessService proService;
+	
+	@Autowired
+	private IntentService intentService;
 	
 	@RequestMapping("/list")
 	public String getProcessList(PageQuery query){
@@ -57,4 +61,16 @@ public class ProcessController extends BaseController {
 		return Result();
 	}
 	
+	
+	@RequestMapping("/getAllIntents")
+	public String getAllIntents(){
+		data = intentService.getAllIntents();
+		if(data instanceof ResultCode){
+			resCode = (ResultCode) data;
+			data = null;
+		}else{
+			resCode = ResultCode.OPERATION_SUCCESSED;
+		}
+		return Result();
+	}
 }

@@ -18,6 +18,7 @@ public class User extends BaseEntity implements Serializable {
 	private String password;
 	private String phone;
 	private String email;
+	private String type;//用户的类型，，，移动端 或是公司内部 PC端
 	private String role;
 	private List<Role> roleList;
 	private Integer companyid;
@@ -140,7 +141,15 @@ public class User extends BaseEntity implements Serializable {
 		this.role = role;
 	}
 
-	
+	public String getType() {
+		return type;
+	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	
+	
 	
 }

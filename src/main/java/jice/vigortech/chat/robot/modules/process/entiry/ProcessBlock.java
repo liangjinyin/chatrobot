@@ -9,12 +9,13 @@ public class ProcessBlock implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private Integer pid;
 	private Integer aid;// app id
 	private String itName;// 意图名称
 	private Integer sort;
-	private String lat;// 纬度--x
+	/*private String lat;// 纬度--x
 	private String lng;// 经度--y
-	
+*/	
 	public Integer getAid() {
 		return aid;
 	}
@@ -33,17 +34,11 @@ public class ProcessBlock implements Serializable {
 	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
-	public String getLat() {
-		return lat;
+	public Integer getPid() {
+		return pid;
 	}
-	public void setLat(String lat) {
-		this.lat = lat;
-	}
-	public String getLng() {
-		return lng;
-	}
-	public void setLng(String lng) {
-		this.lng = lng;
+	public void setPid(Integer pid) {
+		this.pid = pid;
 	}
 	
 }

@@ -17,6 +17,10 @@ public class Processes extends BaseEntity implements Serializable {
 	private String name;
 	private String describe;
 	private String content;
+	private String ask;//流程执行之后的询问
+	private String yAction;//肯定执行的动作
+	private String nAction;//否定执行的动作
+	private Integer flag;//动作前置或是后置  0 前置；1 后置
 
 	private List<ProcessBlock> processBlockList;
 
@@ -59,4 +63,37 @@ public class Processes extends BaseEntity implements Serializable {
 	public void setProcessBlockList(List<ProcessBlock> processBlockList) {
 		this.processBlockList = processBlockList;
 	}
+
+	public String getAsk() {
+		return ask;
+	}
+
+	public void setAsk(String ask) {
+		this.ask = ask;
+	}
+
+	public String getyAction() {
+		return yAction;
+	}
+
+	public void setyAction(String yAction) {
+		this.yAction = yAction;
+	}
+
+	public String getnAction() {
+		return nAction;
+	}
+
+	public void setnAction(String nAction) {
+		this.nAction = nAction;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+	
 }

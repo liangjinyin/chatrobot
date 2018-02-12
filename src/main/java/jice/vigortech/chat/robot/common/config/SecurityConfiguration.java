@@ -34,12 +34,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 		.formLogin()
-			.loginProcessingUrl(SysConstants.SYS_URL+"/user/login")
+			.loginProcessingUrl(SysConstants.SYS_URL+"/login")
 				.passwordParameter("password")
 				.usernameParameter("username")
 				.successHandler(loginHandler)
 				.failureHandler(loginHandler)
 				.permitAll();
+		
+		//http.csrf().disable().
 		
 		http.logout()
 			.logoutSuccessHandler(loginHandler)

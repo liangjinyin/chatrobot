@@ -19,7 +19,7 @@ public class Intents extends BaseEntity implements Serializable {
 	private String answer;// 回复
 	private Integer micInterface;//场景中的微服务接口
 	private String actionName;
-	private List<Solt> soltList;//solt
+	private List<Solt> slotList;//solt
 	private List<Ask> askList;// 场景中的客户提问与robot的回答
 	private String input;//场景的输入
 	private List<Mark> output;//场景的输出
@@ -75,13 +75,16 @@ public class Intents extends BaseEntity implements Serializable {
 	}
 
 
-	public List<Solt> getSoltList() {
-		return soltList;
+
+	public List<Solt> getSlotList() {
+		return slotList;
 	}
 
-	public void setSoltList(List<Solt> soltList) {
-		this.soltList = soltList;
+	public void setSlotList(List<Solt> slotList) {
+		this.slotList = slotList;
 	}
+
+
 
 	public List<Ask> getAskList() {
 		return askList;
@@ -133,7 +136,6 @@ public class Intents extends BaseEntity implements Serializable {
 		this.outputId = outputId;
 	}
 
-	
 	
 	
 

@@ -10,6 +10,7 @@ import jice.vigortech.chat.robot.common.constants.ResultCode;
 import jice.vigortech.chat.robot.common.model.service.BaseService;
 import jice.vigortech.chat.robot.common.util.SecurityUtils;
 import jice.vigortech.chat.robot.modules.process.dao.ProcessDao;
+import jice.vigortech.chat.robot.modules.process.entiry.ProcessBlock;
 import jice.vigortech.chat.robot.modules.process.entiry.Processes;
 import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
@@ -55,6 +56,8 @@ public class ProcessService extends BaseService{
 			if(temp==null){
 				return ResultCode.PROCESS_NOT_EXIST;
 			}
+			list = proDao.getBlockByPid(id);
+			temp.put("processBlockList", list);
 			return temp;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,6 +72,7 @@ public class ProcessService extends BaseService{
 	 */
 	@Transactional(readOnly=false,rollbackFor=Exception.class)
 	public ResultCode saveOrUpdatePro(Processes process) {
+		process.setContent(process.getProcessBlockList());
 		if(process.getId()==null){
 			//添加
 			try {
@@ -77,7 +81,14 @@ public class ProcessService extends BaseService{
 					return ResultCode.SESSION_INVALID;
 				}
 				process.setCreateBy(user);
-				proDao.insertProcess(process);
+				if(proDao.insertProcess(process)>0){
+					if(process.getProcessBlockList()!=null){
+						for (ProcessBlock map : process.getProcessBlockList()) {
+							map.setPid(process.getId());
+							proDao.insertBolk(map);
+						}
+					}
+				}
 				return ResultCode.OPERATION_SUCCESSED;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -86,7 +97,15 @@ public class ProcessService extends BaseService{
 		}else{
 			//修改
 			try {
-				proDao.updateProcess(process);
+				if(proDao.updateProcess(process)>0){
+					proDao.deleteBlock(process.getId());
+					if(process.getProcessBlockList()!=null){
+						for (ProcessBlock map : process.getProcessBlockList()) {
+							map.setPid(process.getId());
+							proDao.insertBolk(map);
+						}
+					}
+				}
 				return ResultCode.OPERATION_SUCCESSED;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -106,7 +125,9 @@ public class ProcessService extends BaseService{
 			if(proDao.getProDetailById(id)==null){
 				return ResultCode.PROCESS_NOT_EXIST;
 			}
-			proDao.deleteProcessById(id);
+			if(proDao.deleteProcessById(id)>0){
+				proDao.deleteBlock(id);
+			}
 			return ResultCode.OPERATION_SUCCESSED;
 		} catch (Exception e) {
 			e.printStackTrace();

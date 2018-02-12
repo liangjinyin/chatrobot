@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -48,7 +49,7 @@ public class LoginController extends BaseController implements LogoutSuccessHand
 			resCode = ResultCode.OPERATION_FAILED;
 		}
 		data = null;
-		CorsHandler.addCorsMapping(response);
+		CorsHandler.addCorsMapping(response,request);
 		writeResponse(response);
 	}
 	
@@ -60,13 +61,13 @@ public class LoginController extends BaseController implements LogoutSuccessHand
 			Authentication authentication) throws IOException, ServletException {
 		String username = request.getParameter("username");
 		System.out.println(username);
-		data = userService.getUserTokenByUserName(username);
+		data = userService.getUserTokenByUserName(username,check(request,response));
 		if(data instanceof ResultCode){
 			resCode = ResultCode.OPERATION_FAILED;
 			data = null;
 		}
 		resCode = ResultCode.OPERATION_SUCCESSED;
-		CorsHandler.addCorsMapping(response);
+		CorsHandler.addCorsMapping(response,request);
 		writeResponse(response);	
 	}
 	/**
@@ -77,7 +78,47 @@ public class LoginController extends BaseController implements LogoutSuccessHand
 			throws IOException, ServletException {
 		data = null;
 		resCode = ResultCode.OPERATION_SUCCESSED;
-		CorsHandler.addCorsMapping(response);
+		CorsHandler.addCorsMapping(response,request);
 		writeResponse(response);
 	}
+	
+	/**
+	 * 判断
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean check(HttpServletRequest request,HttpServletResponse response){  
+	    boolean isFromMobile=false;  
+	      
+	    HttpSession session= request.getSession();  
+	   //检查是否已经记录访问方式（移动端或pc端）  
+	    if(null==session.getAttribute("ua")){  
+	        try{  
+	            //获取ua，用来判断是否为移动端访问  
+	            String userAgent = request.getHeader( "USER-AGENT" ).toLowerCase();    
+	            if(null == userAgent){    
+	                userAgent = "";    
+	            }  
+	            //isFromMobile=CheckMobileUtil.check(userAgent); 
+	            isFromMobile = userAgent.equals("okhttp/3.3.1");
+	            System.out.println(userAgent);//okhttp/3.3.1
+	            //判断是否为移动端访问  
+	            if(isFromMobile){  
+	                System.out.println("移动端访问");  
+	                session.setAttribute("ua","mobile");  
+	            } else {  
+	                System.out.println("pc端访问");//postmanruntime/7.1.1  
+	                session.setAttribute("ua","pc");  
+	            }  
+	        }catch(Exception e){
+	        	e.printStackTrace();
+	        }  
+	    }else{  
+	        isFromMobile=session.getAttribute("ua").equals("mobile");  
+	    }  
+	      
+	    return isFromMobile;  
+	}  
 }

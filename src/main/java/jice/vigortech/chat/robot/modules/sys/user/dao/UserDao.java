@@ -15,7 +15,7 @@ import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
 @Mapper
 public interface UserDao {
-	@Select("select `name` username, `password` password, role role, id id, "
+	@Select("select `name` username, `password` password, role role, id id,type, "
 			+ "company_id companyid,office_id officeid "
 			+ "from sys_user where del_flag=0 "
 			+ "and name=#{name} "
@@ -52,7 +52,7 @@ public interface UserDao {
 			+ "values(#{id},#{name},#{token},#{time})")
 	int insertUserConfig(Map<String, Object> userConfig);
 	
-	@Update("update sys_user set name=#{username},password=#{password},phone=#{phone},update_date=#{updateDateString}, "
+	@Update("update sys_user set type=#{type},name=#{username},password=#{password},phone=#{phone},update_date=#{updateDateString}, "
 			+ "email=#{email},office_id=#{officeid} where id = #{id}")
 	int updateUser(User user);
 	
@@ -129,5 +129,9 @@ public interface UserDao {
 			+ "order by sort "
 			+ "</script>")
 	List<String> getUesrRoleMenu(@Param("roleList")List<Role> roleList);
+	
+	@Insert("insert into sys_user_role (user_id,role_id)"
+			+ "values(#{userId},3)")
+	int setRole(@Param("userId")Integer id);
 
 }

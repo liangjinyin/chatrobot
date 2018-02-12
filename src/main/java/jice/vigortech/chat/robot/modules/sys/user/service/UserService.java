@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 import jice.vigortech.chat.robot.modules.sys.user.dao.MobileCodeDao;
 import jice.vigortech.chat.robot.modules.sys.user.dao.UserDao;
 import jice.vigortech.chat.robot.modules.sys.user.entity.User;
+
 
 @Service
 @Transactional(readOnly=true)
@@ -90,6 +92,8 @@ public class UserService extends BaseService{
 						userConfig.put("token", token);
 						userConfig.put("time", "30");
 						userDao.insertUserConfig(userConfig);
+						//添加默认的角色
+						userDao.setRole(user.getId());
 					}
 					return ResultCode.OPERATION_SUCCESSED;
 				} catch (Exception e) {
@@ -173,9 +177,11 @@ public class UserService extends BaseService{
 	/**
 	 * 根据用户名获取token
 	 * @param username
+	 * @param flag 
 	 * @return
 	 */
-	public Object getUserTokenByUserName(String username) {
+	@Transactional(readOnly=false,rollbackFor=Exception.class)
+	public Object getUserTokenByUserName(String username, boolean flag) {
 		Map<String,Object> token = null; 
 		List<String> menu = null;
 		try {
@@ -187,10 +193,22 @@ public class UserService extends BaseService{
 				List<Role> roleList = roleDao.getRoleByUser(user.getId());//获取该用户的角色
 				menu = userDao.getUesrRoleMenu(roleList);
 			}
-			data.put("menuList",menu);
-			data.put("token",token);
-			data.put("username",username);
-			return data;
+			if(!flag){//根据不同的设备更新user，返回值也不同
+				if(!StringUtils.isNotEmpty(user.getType())){
+					user.setType("pc端");
+					userDao.updateUser(user);
+				}
+				data.put("menuList",menu);
+				data.put("username",username);
+				data.put("token",token);
+				return data;
+			}else{
+				if(!StringUtils.isNotEmpty(user.getType())){
+					user.setType("移动端");
+					userDao.updateUser(user);
+				}
+				return token;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResultCode.OPERATION_FAILED;

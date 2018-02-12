@@ -145,5 +145,8 @@ public interface IntentDao {
 	
 	@Select("select id ,name from robot_scene_mark where  id in (${id})")
 	List<Map<String, Object>> getMarkById(@Param("id")String id);
+	
+	@Select("select id ,app_id aid,name itName from robot_scene where del_flag=0 order by app_id")
+	List<Map<String, Object>> getAllIntents();
 
 }

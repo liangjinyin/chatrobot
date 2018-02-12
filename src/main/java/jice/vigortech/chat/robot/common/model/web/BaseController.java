@@ -40,6 +40,23 @@ public abstract class BaseController {
 				SerializerFeature.WriteMapNullValue);
 	}
 	
+	public String result() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> status = new HashMap<String, Object>();
+		if (resCode == null) {
+			resCode = ResultCode.NONE;// 没有意义的数据
+		}
+		
+		result.put("data", data);
+		status.put("code", resCode.getResultCode());
+		status.put("msg", resCode.getResultMsg());
+		result.put("status", status);
+		
+		String temp = JSON.toJSONString(result, SerializerFeature.DisableCircularReferenceDetect,
+				SerializerFeature.WriteMapNullValue);
+		return temp.replace("\\", "");
+	}
+	
 	public static void writeResponse(HttpServletResponse response, ResultCode result) throws IOException {
 		JSONObject json = new JSONObject();
 		json.put("retCode", result.getResultCode());

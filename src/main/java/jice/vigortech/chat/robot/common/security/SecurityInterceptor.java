@@ -48,7 +48,7 @@ public class SecurityInterceptor extends GenericFilterBean implements AccessDeni
         	} else {
         		retCode = ResultCode.OPERATION_NOT_PERMITTED;
         	}
-    		CorsHandler.addCorsMapping((HttpServletResponse) response);
+    		CorsHandler.addCorsMapping((HttpServletResponse) response,(HttpServletRequest) request);
     		BaseController.writeResponse((HttpServletResponse) response, retCode);
         }
 		
