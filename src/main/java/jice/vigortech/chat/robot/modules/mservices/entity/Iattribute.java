@@ -10,44 +10,23 @@ public class Iattribute implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Integer id;
-	private Integer mid;//微服务接口id
-	private String name;
-	private String value;
-	private String describe;
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	private String attrName;//参数名称
+	private String describe;//参数描述
 	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	
+	
+	
+	public String getAttrName() {
+		return attrName;
+	}
+	public void setAttrName(String attrName) {
+		this.attrName = attrName;
+	}
 	public String getDescribe() {
 		return describe;
 	}
 	public void setDescribe(String describe) {
 		this.describe = describe;
 	}
-	public Integer getMid() {
-		return mid;
-	}
-	public void setMid(Integer mid) {
-		this.mid = mid;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
-	
 }

@@ -17,7 +17,7 @@ import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 @Mapper
 public interface ProcessDao {
 	@Select("<script>"
-			+ "select id ,name,`describe`,content,ask,y_action yAction,n_action nAction,flag, create_date createDate,create_by createBy,update_date updateDate from robot_process "
+			+ "select id ,name,`describe`,content,ask,y_action yAction,n_action nAction, create_date createDate,create_by createBy,update_date updateDate from robot_process "
 			+ "where del_flag=0 "
 			+ "<if test=\"name!=null and name!=''\">"
 			+ "and name like concat('%',#{name},'%') "
@@ -42,28 +42,28 @@ public interface ProcessDao {
 			+ "</script>")
 	int getProcessCount(PageQuery query);
 	
-	@Select("select id,`name`,`describe` ,content,ask,y_action yAction,n_action nAction,flag,update_date updateDate from robot_process "
+	@Select("select id,`name`,`describe` ,content,ask,y_action yAction,n_action nAction,update_date updateDate from robot_process "
 			+ "where del_flag=0 and id=${id}")
 	Map<String,Object> getProDetailById(@Param("id")Integer id);
 	
-	@Insert("insert into robot_process (`name`,`describe`,content,ask,y_action ,n_action,flag,create_by,create_date,update_date) "
-			+ "values(#{name},#{describe},#{content},#{ask},#{yAction},#{nAction},#{flag},#{createBy.username},#{updateDateString},#{updateDateString})")
+	@Insert("insert into robot_process (`name`,`describe`,content,ask,y_action ,n_action,create_by,create_date,update_date) "
+			+ "values(#{name},#{describe},#{content},#{ask},#{yAction},#{nAction},#{createBy.username},#{updateDateString},#{updateDateString})")
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
 	int insertProcess(Processes process);
 	
-	@Insert("insert into robot_process_block(pid,aid,it_name,sort)"
-			+ "values(#{pid},#{aid},#{itName},#{sort})")
+	@Insert("insert into robot_process_block(pid,iid,it_name,sort)"
+			+ "values(#{pid},#{iid},#{itName},#{sort})")
 	int insertBolk(ProcessBlock map);
 
 	@Update("update robot_process set `name`=#{name},`describe`=#{describe},content=#{content}, "
-			+ "ask=#{ask},y_action=#{yAction},n_action=#{nAction},flag=#{flag}," 
+			+ "ask=#{ask},y_action=#{yAction},n_action=#{nAction},trigger_intent=#{trigger}," 
 			+ "update_date=#{updateDateString} where id=#{id} ")
 	int updateProcess(Processes process);
 	
 	@Update("update robot_process set del_flag=1 where id=${id}")
 	int deleteProcessById(@Param("id")Integer id);
 	
-	@Select("select pid,aid,it_name itName,sort from robot_process_block where del_flag = 0 and pid = #{pid} "
+	@Select("select pid,iid,it_name itName,sort from robot_process_block where del_flag = 0 and pid = #{pid} "
 			+ "order by sort")
 	List<Map<String, Object>> getBlockByPid(@Param("pid")Integer id);
 	

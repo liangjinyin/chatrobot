@@ -10,20 +10,21 @@ public class ProcessBlock implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Integer pid;
-	private Integer aid;// app id
+	private Integer iid;// 意图 id
 	private String itName;// 意图名称
 	private Integer sort;
 	/*private String lat;// 纬度--x
 	private String lng;// 经度--y
 */	
-	public Integer getAid() {
-		return aid;
-	}
-	public void setAid(Integer aid) {
-		this.aid = aid;
-	}
+	
 	public String getItName() {
 		return itName;
+	}
+	public Integer getIid() {
+		return iid;
+	}
+	public void setIid(Integer iid) {
+		this.iid = iid;
 	}
 	public void setItName(String itName) {
 		this.itName = itName;

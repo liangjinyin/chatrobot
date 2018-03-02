@@ -11,7 +11,7 @@ public class Solt implements Serializable{
 
 	private Integer id;
 	private Integer intentId;
-	private Integer flag;//是否必须
+	private String flag;//是否必须 true表示是；flase表示否
 	private String typeName;//参数名称
 	private String dictName;//参数类型--词库中取
 	private String message;//提示语
@@ -37,10 +37,11 @@ public class Solt implements Serializable{
 	public void setIntentId(Integer intentId) {
 		this.intentId = intentId;
 	}
-	public Integer getFlag() {
+	
+	public String getFlag() {
 		return flag;
 	}
-	public void setFlag(Integer flag) {
+	public void setFlag(String flag) {
 		this.flag = flag;
 	}
 	public String getTypeName() {

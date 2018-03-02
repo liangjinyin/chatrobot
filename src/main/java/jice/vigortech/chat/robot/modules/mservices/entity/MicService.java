@@ -17,6 +17,7 @@ public class MicService extends BaseEntity implements Serializable {
 	private String interfaces;//接口
 	private String url;//完整的url
 	private String describe;//描述
+	private String attrJson;//接口参数json
 	private List<Iattribute> attrList;
 
 	public Integer getId() {
@@ -67,4 +68,16 @@ public class MicService extends BaseEntity implements Serializable {
 		this.attrList = attrList;
 	}
 
+
+	public String getAttrJson() {
+		return attrJson;
+	}
+
+	public void setAttrJson(String attrJson) {
+		this.attrJson = attrJson;
+	}
+
+	
+
+	
 }

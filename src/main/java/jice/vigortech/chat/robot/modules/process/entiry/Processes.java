@@ -3,8 +3,6 @@ package jice.vigortech.chat.robot.modules.process.entiry;
 import java.io.Serializable;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-
 import jice.vigortech.chat.robot.common.model.entity.BaseEntity;
 
 public class Processes extends BaseEntity implements Serializable {
@@ -20,7 +18,8 @@ public class Processes extends BaseEntity implements Serializable {
 	private String ask;//流程执行之后的询问
 	private String yAction;//肯定执行的动作
 	private String nAction;//否定执行的动作
-	private Integer flag;//动作前置或是后置  0 前置；1 后置
+	private String trigger;//触发意图
+	
 
 	private List<ProcessBlock> processBlockList;
 
@@ -48,13 +47,13 @@ public class Processes extends BaseEntity implements Serializable {
 		this.describe = describe;
 	}
 
-	public String getContent() {
+	/*public String getContent() {
 		return content;
 	}
 
 	public void setContent(List<ProcessBlock> processBlockList) {
 		this.content = JSON.toJSONString(processBlockList);
-	}
+	}*/
 
 	public List<ProcessBlock> getProcessBlockList() {
 		return processBlockList;
@@ -88,12 +87,20 @@ public class Processes extends BaseEntity implements Serializable {
 		this.nAction = nAction;
 	}
 
-	public Integer getFlag() {
-		return flag;
+	public String getTrigger() {
+		return trigger;
 	}
 
-	public void setFlag(Integer flag) {
-		this.flag = flag;
+	public void setTrigger(String trigger) {
+		this.trigger = trigger;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 	
 }

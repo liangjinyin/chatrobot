@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+
 import jice.vigortech.chat.robot.common.constants.ResultCode;
 import jice.vigortech.chat.robot.common.model.service.BaseService;
 import jice.vigortech.chat.robot.common.util.SecurityUtils;
@@ -72,7 +74,7 @@ public class ProcessService extends BaseService{
 	 */
 	@Transactional(readOnly=false,rollbackFor=Exception.class)
 	public ResultCode saveOrUpdatePro(Processes process) {
-		process.setContent(process.getProcessBlockList());
+		process.setContent(JSON.toJSONString(process.getProcessBlockList()));
 		if(process.getId()==null){
 			//添加
 			try {
@@ -81,12 +83,16 @@ public class ProcessService extends BaseService{
 					return ResultCode.SESSION_INVALID;
 				}
 				process.setCreateBy(user);
+				
 				if(proDao.insertProcess(process)>0){
 					if(process.getProcessBlockList()!=null){
 						for (ProcessBlock map : process.getProcessBlockList()) {
 							map.setPid(process.getId());
 							proDao.insertBolk(map);
 						}
+						//添加触发意图
+						process.setTrigger(process.getProcessBlockList().get(0).getItName());
+						proDao.updateProcess(process);
 					}
 				}
 				return ResultCode.OPERATION_SUCCESSED;
@@ -104,6 +110,8 @@ public class ProcessService extends BaseService{
 							map.setPid(process.getId());
 							proDao.insertBolk(map);
 						}
+						process.setTrigger(process.getProcessBlockList().get(0).getItName());
+						proDao.updateProcess(process);
 					}
 				}
 				return ResultCode.OPERATION_SUCCESSED;

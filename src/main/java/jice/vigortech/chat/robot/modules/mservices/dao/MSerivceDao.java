@@ -20,8 +20,8 @@ public interface MSerivceDao {
 	
 	
 	@Insert("insert into robot_mic_service ("
-			+ "`name`,url,interfaces,`describe`,create_by,create_date,update_date )"
-			+ "values( #{name},#{url},#{interfaces},#{describe},#{createBy.username},#{updateDateString},#{updateDateString}"
+			+ "`name`,url,attr,`describe`,create_by,create_date,update_date )"
+			+ "values( #{name},#{url},#{attrJson},#{describe},#{createBy.username},#{updateDateString},#{updateDateString}"
 			+ ") ")
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
 	int saveMicService(MicService micService);
@@ -32,7 +32,7 @@ public interface MSerivceDao {
 	int saveArrt(Iattribute iAttribute);
 	
 	@Select("<script> "
-			+ "SELECT `name`,id,url,interfaces,`describe`,create_by createBy,update_date updateDate "
+			+ "SELECT `name`,id,url,`describe`,create_by createBy,update_date updateDate "
 			+ "from robot_mic_service " 
 			+ "WHERE del_flag = 0  "
 			+ "<if test=\"name!=null and name!=''\"> "
@@ -59,7 +59,7 @@ public interface MSerivceDao {
 			+ "</script>")
 	int getMicServiceCount(PageQuery query);
 	
-	@Select("select `name`,id,url,interfaces,`describe`,create_by createBy,update_date updateDate "
+	@Select("select `name`,id,url,attr,`describe`,create_by createBy,update_date updateDate "
 			+ "from robot_mic_service where  id=${id}")
 	Map<String, Object> getMicServiceById(@Param("id")Integer id);
 	
@@ -72,5 +72,10 @@ public interface MSerivceDao {
 
 	@Select("select name,`value`,id,`describe`,mid from robot_mic_arrt where mid=${id}")
 	List<Map<String, Object>> getMicArrtByMid(@Param("id")Integer id);
+
+	@Update("update robot_mic_service set name=#{name},url=#{url},attr=#{attrJson}, "
+			+ "`describe` = #{describe},update_date=#{updateDateString} "
+			+ "where id=#{id}")
+	int updateMicService(MicService micService);
 
 }

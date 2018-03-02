@@ -25,6 +25,7 @@ public class Intents extends BaseEntity implements Serializable {
 	private List<Mark> output;//场景的输出
 	private String check;//
 	private String outputId;
+	private Integer flag;//动作前置或是后置  0 前置；1 后置
 
 	public String getAnswer() {
 		return answer;
@@ -136,8 +137,12 @@ public class Intents extends BaseEntity implements Serializable {
 		this.outputId = outputId;
 	}
 
-	
-	
+	public Integer getFlag() {
+		return flag;
+	}
 
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 }

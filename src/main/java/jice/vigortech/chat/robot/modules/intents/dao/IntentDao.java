@@ -21,8 +21,8 @@ import jice.vigortech.chat.robot.modules.sys.system.entity.PageQuery;
 public interface IntentDao {
 	//添加场景
 	@Insert("insert into robot_scene "
-			+ "(app_id, name, rank,answer,input,`check`,act_name,create_date,update_date) "
-			+ "values(#{appId}, #{name}, #{rank},#{answer},#{input}, #{check},#{actionName},#{updateDateString}, "
+			+ "(app_id, name, rank,answer,input,`check`,act_name,flag,create_date,update_date) "
+			+ "values(#{appId}, #{name}, #{rank},#{answer},#{input}, #{check},#{actionName},#{flag},#{updateDateString}, "
 			+ "#{updateDateString}) "
 			)
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
@@ -65,7 +65,7 @@ public interface IntentDao {
 	int deleteOutput(@Param("id")Integer id);
 	
 	//更新场景
-	@Update("update robot_scene set name=#{name},rank=#{rank},act_name=#{actionName},answer=#{answer},input=#{input}, "
+	@Update("update robot_scene set name=#{name},rank=#{rank},act_name=#{actionName},answer=#{answer},input=#{input},flag=#{flag}, "
 			+ "output=#{outputId},`check`=#{check},update_date=#{updateDateString} where id=#{id}"
 			)
 	int updateIntent(Intents intent);
@@ -87,7 +87,7 @@ public interface IntentDao {
 	
 	
 	//查询场景信息
-	@Select("select id id,app_id appId,input,name,`check`,rank,act_name actionName, "
+	@Select("select id id,app_id appId,input,name,`check`,rank,act_name actionName,flag, "
 			+ "update_date updateDate "
 			+ "from robot_scene "
 			+ "where del_flag=0 and id=${id} "
