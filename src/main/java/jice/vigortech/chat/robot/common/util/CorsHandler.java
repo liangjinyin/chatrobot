@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CorsHandler {
 
 	public static void addCorsMapping(HttpServletResponse response,HttpServletRequest request) {
-		String []  allowDomain= {"http://localhost:8081","http://119.23.175.190","http://127.0.0.1"};  
+		String []  allowDomain= {"http://localhost:8081","http://192.168.2.202","http://119.23.175.190","http://127.0.0.1"};  
         
 		Set<String> allowedOrigins= new HashSet<String>(Arrays.asList(allowDomain));  
         

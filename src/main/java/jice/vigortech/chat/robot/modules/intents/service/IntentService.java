@@ -9,10 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
+
 import jice.vigortech.chat.robot.common.constants.ResultCode;
+import jice.vigortech.chat.robot.common.util.JSONUtils;
 import jice.vigortech.chat.robot.modules.application.dao.AppDao;
 import jice.vigortech.chat.robot.modules.intents.dao.IntentDao;
+import jice.vigortech.chat.robot.modules.intents.entity.ActService;
 import jice.vigortech.chat.robot.modules.intents.entity.Ask;
+import jice.vigortech.chat.robot.modules.intents.entity.ContentJson;
 import jice.vigortech.chat.robot.modules.intents.entity.Entity;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
 import jice.vigortech.chat.robot.modules.intents.entity.Mark;
@@ -65,7 +70,7 @@ public class IntentService {
 			if(intentDao.updateIntent(intent)>=0 ){
 				//修改或添加ask
 				Map<String,Object> temp  = intentDao.getIntentById(intent.getId());
-				deleteAskAndSlot(temp,intent.getId());
+				delete(temp,intent.getId());
 				insertIntent(intent);
 				return ResultCode.OPERATION_SUCCESSED;
 			}else{
@@ -86,7 +91,7 @@ public class IntentService {
 			return ResultCode.INTENT_NOT_EXIST;
 		}
 		if(intentDao.deleteIntent(id)>0){
-			deleteAskAndSlot(intent,id);
+			delete(intent,id);
 			return ResultCode.OPERATION_SUCCESSED;
 		}
 		return ResultCode.OPERATION_FAILED;
@@ -133,7 +138,7 @@ public class IntentService {
 		String inputId  = (String) intent.get("input");
 		List<Map<String, Object>> inputObj = null;
 		List<Map<String, Object>> checkIdObj = null;
-		if(StringUtils.isNoneEmpty(inputId)){
+		if(StringUtils.isNotEmpty(inputId)){
 			inputObj = intentDao.getMarkById(inputId);
 		}
 		String checkId  = (String) intent.get("check");
@@ -141,18 +146,34 @@ public class IntentService {
 			checkIdObj = intentDao.getMarkById(checkId);
 		}
 		
+		//返回动作与微服务维度
+		ActService actService = intentDao.getActServiceByIntId(id);
+		if(actService!=null){
+			String conJSONString = actService.getContent();
+			if(StringUtils.isNotEmpty(conJSONString)){
+				List<ContentJson> contentList = JSONUtils.JSONStringToContentJson(conJSONString);
+				actService.setcJson(contentList);
+			}
+		}else{
+			actService = new ActService();
+		}
+		
+		intent.put("actService", actService);
 		intent.put("askList", askList);
 		intent.put("slotList", solt);
 		intent.put("output", output);
 		intent.put("inputObj", inputObj);
 		intent.put("checkIdObj", checkIdObj);
 		data.put("intent", intent);
-		//data.put("kkk", getIntentDetail(1));
+		
 		return data;
 	}
-	
+	/**
+	 * 添加intent意图关联的维度
+	 * @param intent 意图对象
+	 */
 	private void insertIntent(Intents intent){
-		
+		//添加提问
 		if(intent.getAskList()!=null){
 			for (Ask ask : intent.getAskList()) {
 				ask.setIntent(intent.getName());
@@ -179,6 +200,7 @@ public class IntentService {
 				intentDao.insertAction(solt);
 			}
 		}
+		//添加输出
 		if(intent.getOutput()!=null){
 			String id = "";
 			for(Mark output :intent.getOutput()){
@@ -193,9 +215,23 @@ public class IntentService {
 				intentDao.updateIntent(intent);
 			}
 		}
+		//添加动作微服务关系
+		if(intent.getActService()!=null){
+			ActService temp = intent.getActService();
+			temp.setIntName(intent.getName());
+			temp.setIntId(intent.getId());
+			if(temp.getcJson()!=null){
+				temp.setContent(JSON.toJSONString(temp.getcJson()));//将内容和执行动作转换为json数据
+			}
+			intentDao.insertActService(temp);
+		}
 	}
-	
-	private void deleteAskAndSlot(Map<String,Object> intent,Integer id){
+	/**
+	 * 删除intent意图关联的维度
+	 * @param intent 意图
+	 * @param id 意图id
+	 */
+	private void delete(Map<String,Object> intent,Integer id){
 		String iname = (String) intent.get("name");
 		List<Map<String,Object>> askList = intentDao.getAskListByIName(iname);
 		for (Map<String, Object> map : askList) {
@@ -205,6 +241,7 @@ public class IntentService {
 		intentDao.deleteAskByName(iname);
 		intentDao.deleteSolt(id);
 		intentDao.deleteOutput(id);
+		intentDao.deleteActServiceByIntId(id);
 	}
 	
 	/**

@@ -77,7 +77,4 @@ public class MicService extends BaseEntity implements Serializable {
 		this.attrJson = attrJson;
 	}
 
-	
-
-	
 }

@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 
+import jice.vigortech.chat.robot.modules.intents.entity.ActService;
 import jice.vigortech.chat.robot.modules.intents.entity.Ask;
 import jice.vigortech.chat.robot.modules.intents.entity.Entity;
 import jice.vigortech.chat.robot.modules.intents.entity.Intents;
@@ -51,6 +52,11 @@ public interface IntentDao {
 	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select last_insert_id()" })
 	int insertOutput(Mark output);
 	
+	@Insert("insert into robot_scene_mic_service("
+			+ "int_id,int_name,action_name,mic_id,type,y_result,n_result,content)"
+			+ "values(#{intId},#{intName},#{actionName},#{micId},#{type},#{yResult},#{nResult},#{content})")
+	int insertActService(ActService actService);
+	
 	//删除场景
 	
 	@Update("update robot_scene set del_flag = 1 where id = ${id}")
@@ -63,6 +69,8 @@ public interface IntentDao {
 	int deleteAskByName(@Param("name")String iname);
 	@Update("update robot_scene_mark set del_flag=1 where int_id=${id}")
 	int deleteOutput(@Param("id")Integer id);
+	@Update("update robot_scene_mic_service set del_flag=1 where int_id=${id}")
+	int deleteActServiceByIntId(@Param("id")Integer id);
 	
 	//更新场景
 	@Update("update robot_scene set name=#{name},rank=#{rank},act_name=#{actionName},answer=#{answer},input=#{input},flag=#{flag}, "
@@ -148,5 +156,12 @@ public interface IntentDao {
 	
 	@Select("select id ,app_id aid,name itName from robot_scene where del_flag=0 order by app_id")
 	List<Map<String, Object>> getAllIntents();
+	
+	@Select("select id,action_name actionName,mic_id micId,type,y_result yResult, "
+			+ "n_result nResult,content "
+			+ "from robot_scene_mic_service "
+			+ "where del_flag=0 and int_id=${id}")
+	ActService getActServiceByIntId(@Param("id")Integer id);
+	
 
 }

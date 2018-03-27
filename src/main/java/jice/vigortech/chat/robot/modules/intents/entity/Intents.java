@@ -26,6 +26,7 @@ public class Intents extends BaseEntity implements Serializable {
 	private String check;//
 	private String outputId;
 	private Integer flag;//动作前置或是后置  0 前置；1 后置
+	private ActService actService;
 
 	public String getAnswer() {
 		return answer;
@@ -145,4 +146,13 @@ public class Intents extends BaseEntity implements Serializable {
 		this.flag = flag;
 	}
 
+	public ActService getActService() {
+		return actService;
+	}
+
+	public void setActService(ActService actService) {
+		this.actService = actService;
+	}
+
+	
 }
